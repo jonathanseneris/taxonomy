@@ -1,15 +1,23 @@
 import { Inter as FontSans } from "next/font/google";
+import localFont from "next/font/local"
 
 import "@/styles/globals.css";
 import { siteConfig } from "@/config/site";
 import { absoluteUrl, cn } from "@/lib/utils";
-import { Analytics } from "@/components/analytics";
-import { TailwindIndicator } from "@/components/tailwind-indicator";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/toaster"
+import { Analytics } from "@/components/analytics"
+import { TailwindIndicator } from "@/components/tailwind-indicator"
+import { ThemeProvider } from "@/components/theme-provider"
 
 const fontSans = FontSans({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-sans",
+})
+
+// Font files can be colocated inside of `pages`
+const fontHeading = localFont({
+  src: "../assets/fonts/CalSans-SemiBold.woff2",
+  variable: "--font-heading",
 });
 
 interface RootLayoutProps {
@@ -47,14 +55,6 @@ export const metadata = {
     title: siteConfig.name,
     description: siteConfig.description,
     siteName: siteConfig.name,
-    images: [
-      {
-        url: absoluteUrl("/og.jpg"),
-        width: 1200,
-        height: 630,
-        alt: siteConfig.name,
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
@@ -73,19 +73,21 @@ export const metadata = {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html
-      lang="en"
+    <html lang="en" suppressHydrationWarning>
+      <head />
+      <body
       className={cn(
-        "bg-white font-sans text-slate-900 antialiased",
-        fontSans.variable
+          "min-h-screen bg-background font-sans antialiased",
+          fontSans.variable,
+          fontHeading.variable
       )}
     >
-      <head />
-      <body className="min-h-screen">
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         {children}
         <Analytics />
         <Toaster />
         <TailwindIndicator />
+        </ThemeProvider>
       </body>
     </html>
   );

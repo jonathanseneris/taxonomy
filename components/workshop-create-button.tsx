@@ -3,17 +3,17 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { toast } from "@/hooks/use-toast";
 
-import { cn } from "@/lib/utils";
-import { Icons } from "@/components/icons";
-import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils"
+import { ButtonProps, buttonVariants } from "@/components/ui/button"
+import { toast } from "@/components/ui/use-toast"
+import { Icons } from "@/components/icons"
 
-interface WorkshopCreateButtonProps
-  extends React.HTMLAttributes<HTMLButtonElement> {}
+interface WorkshopCreateButtonProps extends ButtonProps {}
 
 export function WorkshopCreateButton({
   className,
+  variant,
   ...props
 }: WorkshopCreateButtonProps) {
   const router = useRouter();
@@ -63,7 +63,7 @@ export function WorkshopCreateButton({
       href="/app/workshop/new"
       // onClick={onClick}
       className={cn(
-        buttonVariants(),
+        buttonVariants({ variant }),
         {
           "cursor-not-allowed opacity-60": isLoading,
         },

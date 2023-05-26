@@ -9,7 +9,7 @@ export default function DashboardLoading() {
       <DashboardHeader heading="Posts" text="Create and manage posts.">
         <WorkshopCreateButton />
       </DashboardHeader>
-      <div className="divide-y divide-neutral-200 rounded-md border border-slate-200">
+      <div className="divide-border-200 divide-y rounded-md border">
         <WorkshopListing.Skeleton />
         <WorkshopListing.Skeleton />
         <WorkshopListing.Skeleton />

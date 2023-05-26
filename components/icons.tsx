@@ -8,12 +8,13 @@ import {
   CreditCard,
   File,
   FileText,
-  Github,
   HelpCircle,
   Image,
   LayoutDashboard,
+  Laptop,
   Loader2,
   LucideProps,
+  Moon,
   MoreVertical,
   Network,
   Octagon,
@@ -21,6 +22,7 @@ import {
   Plus,
   Settings,
   Sunrise,
+  SunMedium,
   Trash,
   Twitter,
   User,Search,
@@ -52,6 +54,9 @@ export const Icons = {
   arrowRight: ArrowRight,
   help: HelpCircle,
   pizza: Pizza,
+  sun: SunMedium,
+  moon: Moon,
+  laptop: Laptop,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"
