@@ -1,27 +1,28 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { useRouter } from "next/navigation"
-import { toast } from "@/hooks/use-toast"
+import * as React from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "@/hooks/use-toast";
 
-import { cn } from "@/lib/utils"
-import { Icons } from "@/components/icons"
-import { buttonVariants } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { Icons } from "@/components/icons";
+import { buttonVariants } from "@/components/ui/button";
 
-interface PostCreateButtonProps
+interface WorkshopCreateButtonProps
   extends React.HTMLAttributes<HTMLButtonElement> {}
 
-export function PostCreateButton({
+export function WorkshopCreateButton({
   className,
   ...props
-}: PostCreateButtonProps) {
-  const router = useRouter()
-  const [isLoading, setIsLoading] = React.useState<boolean>(false)
+}: WorkshopCreateButtonProps) {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   async function onClick() {
-    setIsLoading(true)
+    setIsLoading(true);
 
-    const response = await fetch("/api/posts", {
+    const response = await fetch("/api/workshops", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -29,9 +30,9 @@ export function PostCreateButton({
       body: JSON.stringify({
         title: "Untitled Post",
       }),
-    })
+    });
 
-    setIsLoading(false)
+    setIsLoading(false);
 
     if (!response?.ok) {
       if (response.status === 402) {
@@ -39,27 +40,28 @@ export function PostCreateButton({
           title: "Limit of 3 posts reached.",
           description: "Please upgrade to the PRO plan.",
           variant: "destructive",
-        })
+        });
       }
 
       return toast({
         title: "Something went wrong.",
         description: "Your post was not created. Please try again.",
         variant: "destructive",
-      })
+      });
     }
 
-    const post = await response.json()
+    const post = await response.json();
 
     // This forces a cache invalidation.
-    router.refresh()
+    router.refresh();
 
-    router.push(`/editor/${post.id}`)
+    router.push(`/workshops/${post.id}`);
   }
 
   return (
-    <button
-      onClick={onClick}
+    <Link
+      href="/app/workshop/new"
+      // onClick={onClick}
       className={cn(
         buttonVariants(),
         {
@@ -75,7 +77,7 @@ export function PostCreateButton({
       ) : (
         <Icons.add className="mr-2 h-4 w-4" />
       )}
-      New post
-    </button>
-  )
+      Start a workshop
+    </Link>
+  );
 }

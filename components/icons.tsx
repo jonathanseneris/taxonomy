@@ -11,29 +11,36 @@ import {
   Github,
   HelpCircle,
   Image,
+  LayoutDashboard,
   Loader2,
   LucideProps,
   MoreVertical,
+  Network,
+  Octagon,
   Pizza,
   Plus,
   Settings,
+  Sunrise,
   Trash,
   Twitter,
-  User,
+  User,Search,
   X,
   type Icon as LucideIcon,
-} from "lucide-react"
+} from "lucide-react";
 
-export type Icon = LucideIcon
+export type Icon = LucideIcon;
 
 export const Icons = {
-  logo: Command,
+  logo: Sunrise,
   close: X,
   spinner: Loader2,
+  dashboard: LayoutDashboard,
+  directory: Network,
   chevronLeft: ChevronLeft,
   chevronRight: ChevronRight,
   trash: Trash,
   post: FileText,
+  search: Search,
   page: File,
   media: Image,
   settings: Settings,
@@ -64,4 +71,4 @@ export const Icons = {
   ),
   twitter: Twitter,
   check: Check,
-}
+};

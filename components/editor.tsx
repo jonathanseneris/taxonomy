@@ -1,53 +1,53 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { toast } from "@/hooks/use-toast"
-import EditorJS from "@editorjs/editorjs"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Post } from "@prisma/client"
-import { useForm } from "react-hook-form"
-import TextareaAutosize from "react-textarea-autosize"
-import * as z from "zod"
+import * as React from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "@/hooks/use-toast";
+import EditorJS from "@editorjs/editorjs";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Post } from "@prisma/client";
+import { useForm } from "react-hook-form";
+import TextareaAutosize from "react-textarea-autosize";
+import * as z from "zod";
 
-import { cn } from "@/lib/utils"
-import { postPatchSchema } from "@/lib/validations/post"
-import { Icons } from "@/components/icons"
-import { buttonVariants } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { postPatchSchema } from "@/lib/validations/workshop";
+import { Icons } from "@/components/icons";
+import { buttonVariants } from "@/components/ui/button";
 
 interface EditorProps {
-  post: Pick<Post, "id" | "title" | "content" | "published">
+  post: Pick<Post, "id" | "title" | "content" | "published">;
 }
 
-type FormData = z.infer<typeof postPatchSchema>
+type FormData = z.infer<typeof postPatchSchema>;
 
 export function Editor({ post }: EditorProps) {
   const { register, handleSubmit } = useForm<FormData>({
     resolver: zodResolver(postPatchSchema),
-  })
-  const ref = React.useRef<EditorJS>()
-  const router = useRouter()
-  const [isSaving, setIsSaving] = React.useState<boolean>(false)
-  const [isMounted, setIsMounted] = React.useState<boolean>(false)
+  });
+  const ref = React.useRef<EditorJS>();
+  const router = useRouter();
+  const [isSaving, setIsSaving] = React.useState<boolean>(false);
+  const [isMounted, setIsMounted] = React.useState<boolean>(false);
 
   const initializeEditor = React.useCallback(async () => {
-    const EditorJS = (await import("@editorjs/editorjs")).default
-    const Header = (await import("@editorjs/header")).default
-    const Embed = (await import("@editorjs/embed")).default
-    const Table = (await import("@editorjs/table")).default
-    const List = (await import("@editorjs/list")).default
-    const Code = (await import("@editorjs/code")).default
-    const LinkTool = (await import("@editorjs/link")).default
-    const InlineCode = (await import("@editorjs/inline-code")).default
+    const EditorJS = (await import("@editorjs/editorjs")).default;
+    const Header = (await import("@editorjs/header")).default;
+    const Embed = (await import("@editorjs/embed")).default;
+    const Table = (await import("@editorjs/table")).default;
+    const List = (await import("@editorjs/list")).default;
+    const Code = (await import("@editorjs/code")).default;
+    const LinkTool = (await import("@editorjs/link")).default;
+    const InlineCode = (await import("@editorjs/inline-code")).default;
 
-    const body = postPatchSchema.parse(post)
+    const body = postPatchSchema.parse(post);
 
     if (!ref.current) {
       const editor = new EditorJS({
         holder: "editor",
         onReady() {
-          ref.current = editor
+          ref.current = editor;
         },
         placeholder: "Type here to write your post...",
         inlineToolbar: true,
@@ -61,31 +61,31 @@ export function Editor({ post }: EditorProps) {
           table: Table,
           embed: Embed,
         },
-      })
+      });
     }
-  }, [post])
+  }, [post]);
 
   React.useEffect(() => {
     if (typeof window !== "undefined") {
-      setIsMounted(true)
+      setIsMounted(true);
     }
-  }, [])
+  }, []);
 
   React.useEffect(() => {
     if (isMounted) {
-      initializeEditor()
+      initializeEditor();
 
       return () => {
-        ref.current?.destroy()
-        ref.current = undefined
-      }
+        ref.current?.destroy();
+        ref.current = undefined;
+      };
     }
-  }, [isMounted, initializeEditor])
+  }, [isMounted, initializeEditor]);
 
   async function onSubmit(data: FormData) {
-    setIsSaving(true)
+    setIsSaving(true);
 
-    const blocks = await ref.current?.save()
+    const blocks = await ref.current?.save();
 
     const response = await fetch(`/api/posts/${post.id}`, {
       method: "PATCH",
@@ -96,27 +96,27 @@ export function Editor({ post }: EditorProps) {
         title: data.title,
         content: blocks,
       }),
-    })
+    });
 
-    setIsSaving(false)
+    setIsSaving(false);
 
     if (!response?.ok) {
       return toast({
         title: "Something went wrong.",
         description: "Your post was not saved. Please try again.",
         variant: "destructive",
-      })
+      });
     }
 
-    router.refresh()
+    router.refresh();
 
     return toast({
       description: "Your post has been saved.",
-    })
+    });
   }
 
   if (!isMounted) {
-    return null
+    return null;
   }
 
   return (
@@ -125,7 +125,7 @@ export function Editor({ post }: EditorProps) {
         <div className="flex w-full items-center justify-between">
           <div className="flex items-center space-x-10">
             <Link
-              href="/dashboard"
+              href="/app"
               className={cn(buttonVariants({ variant: "ghost" }))}
             >
               <>
@@ -164,5 +164,5 @@ export function Editor({ post }: EditorProps) {
         </div>
       </div>
     </form>
-  )
+  );
 }
