@@ -1,4 +1,4 @@
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { MikroOrmAdapter } from "@next-auth/mikro-orm-adapter";
 import { NextAuthOptions } from "next-auth";
 import EmailProvider from "next-auth/providers/email";
 import GitHubProvider from "next-auth/providers/github";
@@ -25,7 +25,12 @@ export const authOptions: NextAuthOptions = {
   // huh any! I know.
   // This is a temporary fix for prisma client.
   // @see https://github.com/prisma/prisma/issues/16117
-  adapter: PrismaAdapter(db as any),
+  adapter: MikroOrmAdapter({
+    // MikroORM options object. Ref: https://mikro-orm.io/docs/next/configuration#driver
+    clientUrl: process.env.DATABASE_URL,
+    type: "postgresql",
+    debug: process.env.DEBUG === "true" || process.env.DEBUG?.includes("db"),
+  }),
   session: {
     strategy: "jwt",
   },
