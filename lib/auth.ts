@@ -14,13 +14,6 @@ const sgMail = require("@sendgrid/mail");
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-console.log(
-  "----********************************",
-  env.GITHUB_CLIENT_ID,
-  env.GITHUB_CLIENT_SECRET,
-  env.DATABASE_URL
-);
-
 export const authOptions: NextAuthOptions = {
   // huh any! I know.
   // This is a temporary fix for prisma client.
@@ -38,6 +31,7 @@ export const authOptions: NextAuthOptions = {
       clientSecret: env.GITHUB_CLIENT_SECRET,
     }),
     EmailProvider({
+      server: process.env.EMAIL_SERVER,
       from: env.SMTP_FROM,
       sendVerificationRequest: async ({ identifier, url, provider }) => {
         console.log("-----start", identifier, url, provider);
@@ -50,10 +44,12 @@ export const authOptions: NextAuthOptions = {
           },
         });
 
+        console.log("user", user);
         if (!user) {
           throw new Error("no user");
         }
 
+        console.log("user", user);
         const msg = {
           to: user.email, // Change to your recipient
           dynamic_template_data: {
@@ -77,7 +73,7 @@ export const authOptions: NextAuthOptions = {
         const result = await postmarkClient.sendEmailWithTemplate({
           TemplateId: parseInt(templateId),
           To: identifier,
-          From: "hi@madge.io", //provider.from as string,
+          From: env.SMTP_FROM, //provider.from as string,
           TemplateModel: {
             action_url: url,
             product_name: siteConfig.name,
