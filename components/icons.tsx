@@ -10,8 +10,8 @@ import {
   FileText,
   HelpCircle,
   Image,
-  LayoutDashboard,
   Laptop,
+  LayoutDashboard,
   Loader2,
   LucideProps,
   Moon,
@@ -20,17 +20,18 @@ import {
   Octagon,
   Pizza,
   Plus,
+  Search,
   Settings,
-  Sunrise,
   SunMedium,
+  Sunrise,
   Trash,
   Twitter,
-  User,Search,
+  User,
   X,
   type Icon as LucideIcon,
-} from "lucide-react";
+} from "lucide-react"
 
-export type Icon = LucideIcon;
+export type Icon = LucideIcon
 
 export const Icons = {
   logo: Sunrise,
@@ -76,4 +77,4 @@ export const Icons = {
   ),
   twitter: Twitter,
   check: Check,
-};
+}

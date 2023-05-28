@@ -1,21 +1,21 @@
-import { cache } from "react";
-import { redirect } from "next/navigation";
-import { User } from "@prisma/client";
+import { cache } from "react"
+import { redirect } from "next/navigation"
+import { User } from "@prisma/client"
 
-import { authOptions } from "@/lib/auth";
-import { db } from "@/lib/db";
-import { getCurrentUser } from "@/lib/session";
-import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
-import { EmptyPlaceholder } from "@/components/empty-placeholder";
-import { DashboardHeader } from "@/components/header";
-import { DashboardShell } from "@/components/shell";
-import { WorkshopCreateButton } from "@/components/workshop-create-button";
-import { WorkshopListing } from "@/components/workshop-listing";
+import { authOptions } from "@/lib/auth"
+import { db } from "@/lib/db"
+import { getCurrentUser } from "@/lib/session"
+import { cn } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/button"
+import { EmptyPlaceholder } from "@/components/empty-placeholder"
+import { DashboardHeader } from "@/components/header"
+import { DashboardShell } from "@/components/shell"
+import { WorkshopCreateButton } from "@/components/workshop-create-button"
+import { WorkshopListing } from "@/components/workshop-listing"
 
 export const metadata = {
   title: "Dashboard",
-};
+}
 
 const getWorkshops = cache(async () => {
   return await db.workshop.findMany({
@@ -31,17 +31,17 @@ const getWorkshops = cache(async () => {
     orderBy: {
       startDate: "desc",
     },
-  });
-});
+  })
+})
 
 export default async function DashboardPage() {
-  const user = await getCurrentUser();
+  const user = await getCurrentUser()
 
   if (!user) {
-    redirect(authOptions?.pages?.signIn || "/login");
+    redirect(authOptions?.pages?.signIn || "/login")
   }
 
-  const workshops = await getWorkshops();
+  const workshops = await getWorkshops()
 
   return (
     <DashboardShell>
@@ -72,5 +72,5 @@ export default async function DashboardPage() {
         )}
       </div>
     </DashboardShell>
-  );
+  )
 }

@@ -1,21 +1,21 @@
-import { redirect } from "next/navigation";
+import { redirect } from "next/navigation"
 
-import { authOptions } from "@/lib/auth";
-import { getCurrentUser } from "@/lib/session";
-import { DashboardHeader } from "@/components/header";
-import { NewWorkshopForm } from "@/components/new-workshop-form";
-import { DashboardShell } from "@/components/shell";
+import { authOptions } from "@/lib/auth"
+import { getCurrentUser } from "@/lib/session"
+import { DashboardHeader } from "@/components/header"
+import { NewWorkshopForm } from "@/components/new-workshop-form"
+import { DashboardShell } from "@/components/shell"
 
 export const metadata = {
   title: "New Workshop",
   description: "Create a new workshop.",
-};
+}
 
 export default async function SettingsPage() {
-  const user = await getCurrentUser();
+  const user = await getCurrentUser()
 
   if (!user) {
-    redirect(authOptions?.pages?.signIn || "/login");
+    redirect(authOptions?.pages?.signIn || "/login")
   }
 
   return (
@@ -27,5 +27,5 @@ export default async function SettingsPage() {
         {/*/>*/}
       </div>
     </DashboardShell>
-  );
+  )
 }

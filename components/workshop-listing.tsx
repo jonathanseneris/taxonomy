@@ -1,12 +1,12 @@
-import Link from "next/link";
-import { Workshop } from "@prisma/client";
+import Link from "next/link"
+import { Workshop } from "@prisma/client"
 
-import { formatDate } from "@/lib/utils";
-import { Skeleton } from "@/components/ui/skeleton";
-import { PostOperations } from "@/components/post-operations";
+import { formatDate } from "@/lib/utils"
+import { Skeleton } from "@/components/ui/skeleton"
+import { PostOperations } from "@/components/post-operations"
 
 interface PostItemProps {
-  workshop: Pick<Workshop, "id" | "name" | "createdBy" | "createdAt">;
+  workshop: Pick<Workshop, "id" | "name" | "createdBy" | "createdAt">
 }
 
 export function WorkshopListing({ workshop }: PostItemProps) {
@@ -28,7 +28,7 @@ export function WorkshopListing({ workshop }: PostItemProps) {
       <PostOperations workshop={{ id: workshop.id, title: workshop.title }} />
       {/* <PostDeleteButton workshop={{ id: workshop.id, title: workshop.title }} /> */}
     </div>
-  );
+  )
 }
 
 WorkshopListing.Skeleton = function PostItemSkeleton() {
@@ -39,5 +39,5 @@ WorkshopListing.Skeleton = function PostItemSkeleton() {
         <Skeleton className="h-4 w-4/5" />
       </div>
     </div>
-  );
-};
+  )
+}

@@ -1,7 +1,7 @@
 import { DashboardHeader } from "@/components/header"
+import { DashboardShell } from "@/components/shell"
 import { WorkshopCreateButton } from "@/components/workshop-create-button"
 import { WorkshopListing } from "@/components/workshop-listing"
-import { DashboardShell } from "@/components/shell"
 
 export default function DashboardLoading() {
   return (

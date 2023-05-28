@@ -1,24 +1,24 @@
-import { cache } from "react";
-import * as React from "react";
-import Link from "next/link";
-import { redirect } from "next/navigation";
-import { User } from "@prisma/client";
+import { cache } from "react"
+import * as React from "react"
+import Link from "next/link"
+import { redirect } from "next/navigation"
+import { User } from "@prisma/client"
 
-import { authOptions } from "@/lib/auth";
-import { db } from "@/lib/db";
-import { getCurrentUser } from "@/lib/session";
-import { cn } from "@/lib/utils";
-import { EmptyPlaceholder } from "@/components/empty-placeholder";
-import { DashboardHeader } from "@/components/header";
-import { Icons } from "@/components/icons";
-import { WorkshopListing } from "@/components/workshop-listing";
-import { DashboardShell } from "@/components/shell";
-import { buttonVariants } from "@/components/ui/button";
-import { WorkshopCreateButton } from "@/components/workshop-create-button";
+import { authOptions } from "@/lib/auth"
+import { db } from "@/lib/db"
+import { getCurrentUser } from "@/lib/session"
+import { cn } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/button"
+import { EmptyPlaceholder } from "@/components/empty-placeholder"
+import { DashboardHeader } from "@/components/header"
+import { Icons } from "@/components/icons"
+import { DashboardShell } from "@/components/shell"
+import { WorkshopCreateButton } from "@/components/workshop-create-button"
+import { WorkshopListing } from "@/components/workshop-listing"
 
 export const metadata = {
   title: "Dashboard",
-};
+}
 
 const getPostsForUser = cache(async (userId: User["id"]) => {
   return await db.post.findMany({
@@ -34,17 +34,17 @@ const getPostsForUser = cache(async (userId: User["id"]) => {
     orderBy: {
       updatedAt: "desc",
     },
-  });
-});
+  })
+})
 
 export default async function DashboardPage() {
-  const user = await getCurrentUser();
+  const user = await getCurrentUser()
 
   if (!user) {
-    redirect(authOptions?.pages?.signIn || "/login");
+    redirect(authOptions?.pages?.signIn || "/login")
   }
 
-  const posts = []; //await getPostsForUser(user.id)
+  const posts = [] //await getPostsForUser(user.id)
 
   return (
     <DashboardShell>
@@ -82,5 +82,5 @@ export default async function DashboardPage() {
         )}
       </div>
     </DashboardShell>
-  );
+  )
 }

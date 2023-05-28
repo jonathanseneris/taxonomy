@@ -27,7 +27,7 @@ generator zod {
 
 datasource db {
   provider = "postgres"
-  url      = "postgres://jonathanseneris@localhost/madge"
+  url      = env("DATABASE_URL")
 }
 
 model Account {

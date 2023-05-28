@@ -1,9 +1,9 @@
-import Link from "next/link";
+import Link from "next/link"
 
-import { env } from "@/env.mjs";
-import { siteConfig } from "@/config/site";
-import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
+import { env } from "@/env.mjs"
+import { siteConfig } from "@/config/site"
+import { cn } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/button"
 
 // async function getGitHubStars(): Promise<string | null> {
 //   try {
@@ -33,7 +33,7 @@ import { buttonVariants } from "@/components/ui/button";
 // }
 
 export default async function IndexPage() {
-  const stars = null; //await getGitHubStars()
+  const stars = null //await getGitHubStars()
 
   return (
     <>
@@ -233,5 +233,5 @@ export default async function IndexPage() {
         </div>
       </section>
     </>
-  );
+  )
 }

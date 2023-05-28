@@ -1,34 +1,34 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import { useRouter } from "next/navigation";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { User } from "@prisma/client";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
+import * as React from "react"
+import { useRouter } from "next/navigation"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { User } from "@prisma/client"
+import { useForm } from "react-hook-form"
+import * as z from "zod"
 
-import { cn } from "@/lib/utils";
-import { workshopSchema } from "@/lib/validations/workshop";
-import { ButtonProps, buttonVariants } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { DatePicker } from "@/components/ui/datepicker";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { SelectInput } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { toast } from "@/components/ui/use-toast";
-import { Icons } from "@/components/icons";
+import { cn } from "@/lib/utils"
+import { workshopSchema } from "@/lib/validations/workshop"
+import { ButtonProps, buttonVariants } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import { DatePicker } from "@/components/ui/datepicker"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { SelectInput } from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
+import { toast } from "@/components/ui/use-toast"
+import { Icons } from "@/components/icons"
 
 interface NewWorkshopFormProps extends ButtonProps {}
 
-type FormData = z.infer<typeof workshopSchema>;
+type FormData = z.infer<typeof workshopSchema>
 
 export function NewWorkshopForm({
   className,
   variant,
   ...props
 }: NewWorkshopFormProps) {
-  const router = useRouter();
+  const router = useRouter()
   const { handleSubmit, register, control, formState, watch } =
     useForm<FormData>({
       resolver: zodResolver(workshopSchema),
@@ -37,14 +37,14 @@ export function NewWorkshopForm({
         archived: false,
         paid: false,
       },
-    });
+    })
 
-  const { errors } = formState;
-  const [isSaving, setIsSaving] = React.useState<boolean>(false);
+  const { errors } = formState
+  const [isSaving, setIsSaving] = React.useState<boolean>(false)
 
   async function onSubmit(data: FormData) {
-    setIsSaving(true);
-    console.log("ok");
+    setIsSaving(true)
+    console.log("ok")
     const response = await fetch(`/api/workshops`, {
       method: "POST",
       headers: {
@@ -61,28 +61,28 @@ export function NewWorkshopForm({
         open: true,
         archived: false,
       }),
-    });
-    console.log("response", response);
+    })
+    console.log("response", response)
     // console.log("response.data", response?.data);
-    setIsSaving(false);
+    setIsSaving(false)
 
     if (!response?.ok) {
       return toast({
         title: "Something went wrong.",
         description: "Your name was not updated. Please try again.",
         variant: "destructive",
-      });
+      })
     }
 
     toast({
       description: "Workshop created.",
-    });
+    })
 
-    console.log(response);
-    router.push(`/workshops/${response.data?.id}`);
+    console.log(response)
+    router.push(`/workshops/${response.data?.id}`)
   }
 
-  const isPaid = watch("paid");
+  const isPaid = watch("paid")
 
   return (
     <form
@@ -232,5 +232,5 @@ export function NewWorkshopForm({
         </Card.Footer>
       </Card>
     </form>
-  );
+  )
 }

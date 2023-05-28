@@ -1,6 +1,6 @@
-import { DashboardHeader } from "@/components/header";
-import { DashboardShell } from "@/components/shell";
-import { Card } from "@/components/ui/card";
+import { Card } from "@/components/ui/card"
+import { DashboardHeader } from "@/components/header"
+import { DashboardShell } from "@/components/shell"
 
 export default function DashboardBillingLoading() {
   return (
@@ -11,5 +11,5 @@ export default function DashboardBillingLoading() {
         <Card.Skeleton />
       </div>
     </DashboardShell>
-  );
+  )
 }
