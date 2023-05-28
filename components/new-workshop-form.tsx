@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { toast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { User } from "@prisma/client";
 import { useForm } from "react-hook-form";
@@ -10,24 +9,23 @@ import * as z from "zod";
 
 import { cn } from "@/lib/utils";
 import { workshopSchema } from "@/lib/validations/workshop";
-import { Icons } from "@/components/icons";
-import { buttonVariants } from "@/components/ui/button";
+import { ButtonProps, buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { DatePicker } from "@/components/ui/datepicker";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SelectInput } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/components/ui/use-toast";
+import { Icons } from "@/components/icons";
 
-interface NewWorkshopFormProps extends React.HTMLAttributes<HTMLFormElement> {
-  user: Pick<User, "id" | "name">;
-}
+interface NewWorkshopFormProps extends ButtonProps {}
 
 type FormData = z.infer<typeof workshopSchema>;
 
 export function NewWorkshopForm({
-  user,
   className,
+  variant,
   ...props
 }: NewWorkshopFormProps) {
   const router = useRouter();
@@ -65,7 +63,7 @@ export function NewWorkshopForm({
       }),
     });
     console.log("response", response);
-    console.log("response.data", response.data);
+    // console.log("response.data", response?.data);
     setIsSaving(false);
 
     if (!response?.ok) {
@@ -80,8 +78,8 @@ export function NewWorkshopForm({
       description: "Workshop created.",
     });
 
-    console.log(response.data);
-    router.push(`/workshops/${response.data.id}`);
+    console.log(response);
+    router.push(`/workshops/${response.data?.id}`);
   }
 
   const isPaid = watch("paid");
@@ -223,7 +221,7 @@ export function NewWorkshopForm({
         <Card.Footer>
           <button
             type="submit"
-            className={cn(buttonVariants(), className)}
+            className={cn(buttonVariants({ variant }), className)}
             disabled={isSaving}
           >
             {isSaving && (

@@ -4,10 +4,11 @@ import EmailProvider from "next-auth/providers/email";
 import GitHubProvider from "next-auth/providers/github";
 import { Client } from "postmark";
 
-import { env } from "@/env.mjs"
+import { env } from "@/env.mjs";
 import { siteConfig } from "@/config/site";
 import { db } from "@/lib/db";
-const postmarkClient = new Client(env.POSTMARK_API_TOKEN)
+
+const postmarkClient = new Client(env.POSTMARK_API_TOKEN);
 
 const sgMail = require("@sendgrid/mail");
 
@@ -15,13 +16,10 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 console.log(
   "----********************************",
-  process.env.GITHUB_CLIENT_ID,
-  process.env.GITHUB_CLIENT_SECRET,
-  process.env.DATABASE_URL
+  env.GITHUB_CLIENT_ID,
+  env.GITHUB_CLIENT_SECRET,
+  env.DATABASE_URL
 );
-
-// TODO: Move env vars to env a la t3.
-const postmarkClient = new Client(process.env.POSTMARK_API_TOKEN || "");
 
 export const authOptions: NextAuthOptions = {
   // huh any! I know.
@@ -42,6 +40,7 @@ export const authOptions: NextAuthOptions = {
     EmailProvider({
       from: env.SMTP_FROM,
       sendVerificationRequest: async ({ identifier, url, provider }) => {
+        console.log("-----start", identifier, url, provider);
         const user = await db.user.findUnique({
           where: {
             email: identifier,
@@ -50,6 +49,10 @@ export const authOptions: NextAuthOptions = {
             emailVerified: true,
           },
         });
+
+        if (!user) {
+          throw new Error("no user");
+        }
 
         const msg = {
           to: user.email, // Change to your recipient
@@ -66,7 +69,7 @@ export const authOptions: NextAuthOptions = {
 
         const templateId = user?.emailVerified
           ? env.POSTMARK_SIGN_IN_TEMPLATE
-          : env.POSTMARK_ACTIVATION_TEMPLATE
+          : env.POSTMARK_ACTIVATION_TEMPLATE;
         if (!templateId) {
           throw new Error("Missing template id");
         }
@@ -131,4 +134,5 @@ export const authOptions: NextAuthOptions = {
       };
     },
   },
+  secret: "moop",
 };

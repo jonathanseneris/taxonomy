@@ -6,12 +6,12 @@ import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
 import { EmptyPlaceholder } from "@/components/empty-placeholder";
 import { DashboardHeader } from "@/components/header";
-import { WorkshopListing } from "@/components/workshop-listing";
 import { DashboardShell } from "@/components/shell";
-import { buttonVariants } from "@/components/ui/button";
 import { WorkshopCreateButton } from "@/components/workshop-create-button";
+import { WorkshopListing } from "@/components/workshop-listing";
 
 export const metadata = {
   title: "Dashboard",

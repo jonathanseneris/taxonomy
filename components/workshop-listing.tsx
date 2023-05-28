@@ -2,8 +2,8 @@ import Link from "next/link";
 import { Workshop } from "@prisma/client";
 
 import { formatDate } from "@/lib/utils";
-import { PostOperations } from "@/components/post-operations";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PostOperations } from "@/components/post-operations";
 
 interface PostItemProps {
   workshop: Pick<Workshop, "id" | "name" | "createdBy" | "createdAt">;

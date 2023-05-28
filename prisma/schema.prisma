@@ -195,7 +195,7 @@ model Workshop {
   submissions      Submission[]
   SubmissionReview SubmissionReview[]
   createdBy        User               @relation(fields: [userId], references: [id])
-  createdAt        DateTime?           @db.Timestamptz(0)
+  createdAt        DateTime?          @db.Timestamptz(0)
   userId           String
 }
 

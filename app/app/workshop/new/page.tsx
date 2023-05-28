@@ -22,7 +22,9 @@ export default async function SettingsPage() {
     <DashboardShell>
       <DashboardHeader heading="New Workshop" text="Create a new workshop." />
       <div className="grid gap-10">
-        <NewWorkshopForm user={{ id: user.id, name: user.name }} />
+        {/*<NewWorkshopForm*/}
+        {/*  // user={{ id: user.id, name: user.name }}*/}
+        {/*/>*/}
       </div>
     </DashboardShell>
   );
