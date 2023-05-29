@@ -8,27 +8,30 @@ import {
   CreditCard,
   File,
   FileText,
-  Github,
   HelpCircle,
   Image,
+  Laptop,
   LayoutDashboard,
   Loader2,
   LucideProps,
+  Moon,
   MoreVertical,
   Network,
   Octagon,
   Pizza,
   Plus,
+  Search,
   Settings,
+  SunMedium,
   Sunrise,
   Trash,
   Twitter,
-  User,Search,
+  User,
   X,
   type Icon as LucideIcon,
-} from "lucide-react";
+} from "lucide-react"
 
-export type Icon = LucideIcon;
+export type Icon = LucideIcon
 
 export const Icons = {
   logo: Sunrise,
@@ -52,6 +55,9 @@ export const Icons = {
   arrowRight: ArrowRight,
   help: HelpCircle,
   pizza: Pizza,
+  sun: SunMedium,
+  moon: Moon,
+  laptop: Laptop,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"
@@ -71,4 +77,4 @@ export const Icons = {
   ),
   twitter: Twitter,
   check: Check,
-};
+}

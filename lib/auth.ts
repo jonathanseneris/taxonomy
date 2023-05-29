@@ -4,25 +4,13 @@ import EmailProvider from "next-auth/providers/email";
 import GitHubProvider from "next-auth/providers/github";
 import { Client } from "postmark";
 
-import { siteConfig } from "@/config/site";
-import { db } from "@/lib/db";
+import { env } from "@/env.mjs"
+import { siteConfig } from "@/config/site"
+import { db } from "@/lib/db"
 
-const sgMail = require("@sendgrid/mail");
-
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-console.log(
-  "----********************************",
-  process.env.GITHUB_CLIENT_ID,
-  process.env.GITHUB_CLIENT_SECRET,
-  process.env.DATABASE_URL
-);
-
-// TODO: Move env vars to env a la t3.
-const postmarkClient = new Client(process.env.POSTMARK_API_TOKEN || "");
+const postmarkClient = new Client(env.POSTMARK_API_TOKEN)
 
 export const authOptions: NextAuthOptions = {
-  // huh any! I know.
   // This is a temporary fix for prisma client.
   // @see https://github.com/prisma/prisma/issues/16117
   adapter: MikroOrmAdapter({
@@ -39,12 +27,14 @@ export const authOptions: NextAuthOptions = {
   },
   providers: [
     GitHubProvider({
-      clientId: process.env.GITHUB_CLIENT_ID || "",
-      clientSecret: process.env.GITHUB_CLIENT_SECRET || "",
+      clientId: env.GITHUB_CLIENT_ID,
+      clientSecret: env.GITHUB_CLIENT_SECRET,
     }),
     EmailProvider({
-      from: process.env.SMTP_FROM,
+      server: env.EMAIL_SERVER,
+      from: env.SMTP_FROM,
       sendVerificationRequest: async ({ identifier, url, provider }) => {
+        console.log("-----start", identifier, url, provider)
         const user = await db.user.findUnique({
           where: {
             email: identifier,
@@ -52,32 +42,33 @@ export const authOptions: NextAuthOptions = {
           select: {
             emailVerified: true,
           },
-        });
+        })
 
-        const msg = {
-          to: user.email, // Change to your recipient
-          dynamic_template_data: {
-            login_url: url,
-          },
-          template_id: "d-4929bc32e1b74438879784171dbff8d5",
-
-          // from: 'hi@madge.io', // Change to your verified sender
-          // subject: 'Login to Madge',
-          // text: 'and easy to do anywhere, even with Node.js',
-          // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-        };
+        console.log("user", user)
+        // const msg = {
+        //   to: identifier, // Change to your recipient
+        //   dynamic_template_data: {
+        //     login_url: url,
+        //   },
+        //   template_id: "d-4929bc32e1b74438879784171dbff8d5",
+        //
+        //   // from: 'hi@madge.io', // Change to your verified sender
+        //   // subject: 'Login to Madge',
+        //   // text: 'and easy to do anywhere, even with Node.js',
+        //   // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+        // }
 
         const templateId = user?.emailVerified
-          ? process.env.POSTMARK_SIGN_IN_TEMPLATE
-          : process.env.POSTMARK_ACTIVATION_TEMPLATE;
+          ? env.POSTMARK_SIGN_IN_TEMPLATE
+          : env.POSTMARK_ACTIVATION_TEMPLATE
         if (!templateId) {
-          throw new Error("Missing template id");
+          throw new Error("Missing template id")
         }
 
         const result = await postmarkClient.sendEmailWithTemplate({
           TemplateId: parseInt(templateId),
           To: identifier,
-          From: "hi@madge.io", //provider.from as string,
+          From: provider.from as string, //env.SMTP_FROM,
           TemplateModel: {
             action_url: url,
             product_name: siteConfig.name,
@@ -90,48 +81,42 @@ export const authOptions: NextAuthOptions = {
               Value: new Date().getTime() + "",
             },
           ],
-        });
+        })
 
         if (result.ErrorCode) {
-          throw new Error(result.Message);
+          throw new Error(result.Message)
         }
       },
     }),
   ],
   callbacks: {
     async session({ token, session }) {
-      console.log("token", token);
-      console.log("session", session);
       if (token) {
-        session.user.id = token.id;
-        session.user.name = token.name;
-        session.user.email = token.email;
+        session.user.id = token.id
+        session.user.name = token.name
+        session.user.email = token.email
       }
-      console.log("session105", session);
-      return session;
+      return session
     },
     async jwt({ token, user }) {
-      console.log("token", token);
-      console.log("user", user);
       const dbUser = await db.user.findFirst({
         where: {
-          email: token.email,
+          email: token?.email ? token.email : "",
         },
-      });
-      console.log("user", user);
+      })
       if (!dbUser) {
         if (user) {
-          token.id = user?.id;
+          token.id = user?.id
         }
-        return token;
+        return token
       }
-      console.log("dbUser", dbUser);
       return {
         id: dbUser.id,
         name: dbUser.name,
         email: dbUser.email,
         picture: dbUser.image,
-      };
+      }
     },
   },
-};
+  // secret: "moop",
+}

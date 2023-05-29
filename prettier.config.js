@@ -6,15 +6,21 @@ module.exports = {
     "<THIRD_PARTY_MODULES>",
     "",
     "^types$",
-    "^@local/(.*)$",
+    "^@/env(.*)$",
+    "^@/types/(.*)$",
     "^@/config/(.*)$",
     "^@/lib/(.*)$",
+    "^@/hooks/(.*)$",
+    "^@/components/ui/(.*)$",
     "^@/components/(.*)$",
     "^@/styles/(.*)$",
+    "^@/app/(.*)$",
+    "",
     "^[./]",
   ],
   importOrderSortSpecifiers: true,
   importOrderBuiltinModulesToTop: true,
+  semi: false,
   importOrderParserPlugins: [
     "typescript",
     "jsx",
@@ -24,4 +30,4 @@ module.exports = {
   importOrderMergeDuplicateImports: true,
   importOrderCombineTypeAndValueImports: true,
   plugins: ["@ianvs/prettier-plugin-sort-imports", "prettier-plugin-prisma"],
-};
+}

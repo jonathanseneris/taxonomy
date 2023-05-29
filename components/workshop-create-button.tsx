@@ -1,26 +1,26 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { toast } from "@/hooks/use-toast";
+import * as React from "react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 
-import { cn } from "@/lib/utils";
-import { Icons } from "@/components/icons";
-import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils"
+import { ButtonProps, buttonVariants } from "@/components/ui/button"
+import { toast } from "@/components/ui/use-toast"
+import { Icons } from "@/components/icons"
 
-interface WorkshopCreateButtonProps
-  extends React.HTMLAttributes<HTMLButtonElement> {}
+interface WorkshopCreateButtonProps extends ButtonProps {}
 
 export function WorkshopCreateButton({
   className,
+  variant,
   ...props
 }: WorkshopCreateButtonProps) {
-  const router = useRouter();
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const router = useRouter()
+  const [isLoading, setIsLoading] = React.useState<boolean>(false)
 
   async function onClick() {
-    setIsLoading(true);
+    setIsLoading(true)
 
     const response = await fetch("/api/workshops", {
       method: "POST",
@@ -30,9 +30,9 @@ export function WorkshopCreateButton({
       body: JSON.stringify({
         title: "Untitled Post",
       }),
-    });
+    })
 
-    setIsLoading(false);
+    setIsLoading(false)
 
     if (!response?.ok) {
       if (response.status === 402) {
@@ -40,30 +40,30 @@ export function WorkshopCreateButton({
           title: "Limit of 3 posts reached.",
           description: "Please upgrade to the PRO plan.",
           variant: "destructive",
-        });
+        })
       }
 
       return toast({
         title: "Something went wrong.",
         description: "Your post was not created. Please try again.",
         variant: "destructive",
-      });
+      })
     }
 
-    const post = await response.json();
+    const post = await response.json()
 
     // This forces a cache invalidation.
-    router.refresh();
+    router.refresh()
 
-    router.push(`/workshops/${post.id}`);
+    router.push(`/workshops/${post.id}`)
   }
 
   return (
     <Link
-      href="/app/workshop/new"
+      href="/workshop/new"
       // onClick={onClick}
       className={cn(
-        buttonVariants(),
+        buttonVariants({ variant }),
         {
           "cursor-not-allowed opacity-60": isLoading,
         },
@@ -79,5 +79,5 @@ export function WorkshopCreateButton({
       )}
       Start a workshop
     </Link>
-  );
+  )
 }

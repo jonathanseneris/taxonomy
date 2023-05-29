@@ -1,10 +1,10 @@
-import * as z from "zod";
+import * as z from "zod"
 
 const currencyType = () =>
   z.coerce
     .number()
     .multipleOf(0.01)
-    .nonnegative({ message: "Must not be a negative number" });
+    .nonnegative({ message: "Must not be a negative number" })
 
 export const workshopSchema = z.object({
   name: z.string().min(3).max(128),
@@ -16,4 +16,4 @@ export const workshopSchema = z.object({
   submissionLength: z.enum(["Short", "Medium", "Long", "Book"]).optional(),
   open: z.boolean().default(true),
   archived: z.boolean().default(false),
-});
+})
