@@ -27,7 +27,7 @@ generator zod {
 
 datasource db {
   provider = "postgres"
-  url      = env("DATABASE_URL")
+  url      = "postgresql://jonathanseneris@localhost:5432/madge"
 }
 
 model Account {
@@ -183,7 +183,7 @@ model Workshop {
   targetSize       Int
   startDate        DateTime           @db.Timestamptz(0)
   paid             Boolean            @default(false)
-  price            Decimal            @db.Decimal(10, 0)
+  price            Decimal?           @db.Decimal(10, 0)
   submissionLength String             @db.VarChar(255)
   name             String             @db.VarChar(255)
   description      String             @default("")
@@ -194,9 +194,9 @@ model Workshop {
   submissionSlots  SubmissionSlot[]
   submissions      Submission[]
   SubmissionReview SubmissionReview[]
+  userId           String
   createdBy        User               @relation(fields: [userId], references: [id])
   createdAt        DateTime?          @db.Timestamptz(0)
-  userId           String
 }
 
 model VerificationToken {

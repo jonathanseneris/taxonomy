@@ -4,13 +4,20 @@ import * as React from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { User } from "@prisma/client"
+import axios from "axios"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
 import { cn } from "@/lib/utils"
 import { workshopSchema } from "@/lib/validations/workshop"
 import { ButtonProps, buttonVariants } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { DatePicker } from "@/components/ui/datepicker"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -43,14 +50,10 @@ export function NewWorkshopForm({
   const [isSaving, setIsSaving] = React.useState<boolean>(false)
 
   async function onSubmit(data: FormData) {
-    setIsSaving(true)
-    console.log("ok")
-    const response = await fetch(`/api/workshops`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    try {
+      setIsSaving(true)
+      console.log("ok")
+      const response = await axios.post(`/api/workshops`, {
         name: data.name,
         description: data.description,
         targetSize: data.targetSize,
@@ -60,29 +63,33 @@ export function NewWorkshopForm({
         submissionLength: data.submissionLength,
         open: true,
         archived: false,
-      }),
-    })
-    console.log("response", response)
-    // console.log("response.data", response?.data);
-    setIsSaving(false)
-
-    if (!response?.ok) {
-      return toast({
-        title: "Something went wrong.",
-        description: "Your name was not updated. Please try again.",
-        variant: "destructive",
       })
+      console.log("response", response)
+      // console.log("response.data", response?.data);
+      setIsSaving(false)
+
+      if (response?.statusText !== "OK") {
+        return toast({
+          title: "Something went wrong.",
+          description: "Your name was not updated. Please try again.",
+          variant: "destructive",
+        })
+      }
+
+      toast({
+        description: "Workshop created.",
+      })
+
+      console.log(response)
+      router.push(`/workshop/${response.data?.id}`)
+    } catch (error) {
+      console.error(error)
+      setIsSaving(false)
     }
-
-    toast({
-      description: "Workshop created.",
-    })
-
-    console.log(response)
-    router.push(`/workshops/${response.data?.id}`)
   }
 
   const isPaid = watch("paid")
+  console.log("isPaid", isPaid)
 
   return (
     <form
@@ -91,13 +98,13 @@ export function NewWorkshopForm({
       {...props}
     >
       <Card>
-        <Card.Header>
-          <Card.Title>Create a New Workshop</Card.Title>
+        <CardHeader>
+          <CardTitle>Create a New Workshop</CardTitle>
           {/*<Card.Description>*/}
           {/*  What do you want to name your workshop?*/}
           {/*</Card.Description>*/}
-        </Card.Header>
-        <Card.Content>
+        </CardHeader>
+        <CardContent>
           <div className="grid gap-2">
             <Label htmlFor="name">Name</Label>
             <Input
@@ -170,7 +177,7 @@ export function NewWorkshopForm({
           <div className="mt-6 grid gap-2">
             <Label htmlFor="startDate">Start Date</Label>
             <DatePicker
-              className="w-[400px]"
+              // className="w-[400px]"
               size={32}
               name="startDate"
               control={control}
@@ -201,7 +208,7 @@ export function NewWorkshopForm({
               <p className="px-1 text-xs text-red-600">{errors.paid.message}</p>
             )}
           </div>
-          {isPaid && (
+          {isPaid === "Yes" && (
             <div className="mt-6 grid gap-2">
               <Label htmlFor="price">Cost</Label>
               <Input
@@ -217,8 +224,8 @@ export function NewWorkshopForm({
               )}
             </div>
           )}
-        </Card.Content>
-        <Card.Footer>
+        </CardContent>
+        <CardFooter>
           <button
             type="submit"
             className={cn(buttonVariants({ variant }), className)}
@@ -229,7 +236,7 @@ export function NewWorkshopForm({
             )}
             <span>Save</span>
           </button>
-        </Card.Footer>
+        </CardFooter>
       </Card>
     </form>
   )

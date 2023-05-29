@@ -1,6 +1,8 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+import { Skeleton } from "@/components/ui/skeleton"
+import { WorkshopListing } from "@/components/workshop-listing"
 
 const Card = React.forwardRef<
   HTMLDivElement,
@@ -76,4 +78,23 @@ const CardFooter = React.forwardRef<
 ))
 CardFooter.displayName = "CardFooter"
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+function CardSkeleton() {
+  return (
+    <div className="p-4">
+      <div className="space-y-3">
+        <Skeleton className="h-5 w-2/5" />
+        <Skeleton className="h-4 w-4/5" />
+      </div>
+    </div>
+  )
+}
+
+export {
+  Card,
+  CardHeader,
+  CardFooter,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardSkeleton,
+}

@@ -1,6 +1,4 @@
 import { cache } from "react"
-import * as React from "react"
-import Link from "next/link"
 import { redirect } from "next/navigation"
 import { User } from "@prisma/client"
 
@@ -11,7 +9,6 @@ import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import { EmptyPlaceholder } from "@/components/empty-placeholder"
 import { DashboardHeader } from "@/components/header"
-import { Icons } from "@/components/icons"
 import { DashboardShell } from "@/components/shell"
 import { WorkshopCreateButton } from "@/components/workshop-create-button"
 import { WorkshopListing } from "@/components/workshop-listing"
@@ -20,63 +17,57 @@ export const metadata = {
   title: "Dashboard",
 }
 
-const getPostsForUser = cache(async (userId: User["id"]) => {
-  return await db.post.findMany({
+const getWorkshops = cache(async () => {
+  return await db.workshop.findMany({
     where: {
-      authorId: userId,
+      open: true,
     },
     select: {
       id: true,
-      title: true,
-      published: true,
+      name: true,
+      createdBy: true,
       createdAt: true,
+      startDate: true,
     },
     orderBy: {
-      updatedAt: "desc",
+      startDate: "desc",
     },
   })
 })
 
-export default async function DashboardPage() {
+export default async function DirectoryPage() {
   const user = await getCurrentUser()
 
   if (!user) {
     redirect(authOptions?.pages?.signIn || "/login")
   }
 
-  const posts = [] //await getPostsForUser(user.id)
-
+  const workshops = await getWorkshops()
+  console.log("workshops", workshops)
   return (
     <DashboardShell>
-      <DashboardHeader heading="Dashboard" text="Your workshops at a glance.">
+      <DashboardHeader heading="Directory" text="Find a workshop.">
         <WorkshopCreateButton />
       </DashboardHeader>
       <div>
-        {posts?.length ? (
+        {workshops?.length ? (
           <div className="divide-y divide-neutral-200 rounded-md border border-slate-200">
-            {posts.map((post) => (
-              <WorkshopListing key={post.id} post={post} />
+            {workshops.map((workshop) => (
+              <WorkshopListing key={workshop.id} workshop={workshop} />
             ))}
           </div>
         ) : (
           <EmptyPlaceholder>
             <EmptyPlaceholder.Icon name="post" />
-            <EmptyPlaceholder.Title>No workshops</EmptyPlaceholder.Title>
+            <EmptyPlaceholder.Title>No active workshops</EmptyPlaceholder.Title>
             <EmptyPlaceholder.Description>
-              You don&apos;t have any workshops yet. Join or create one.
+              Create the first!
             </EmptyPlaceholder.Description>
-            <Link
-              href="/app/directory"
+            <WorkshopCreateButton
               className={cn(
                 buttonVariants({ variant: "outline" }),
-                "text-slate-900 m-2"
+                "text-slate-900"
               )}
-            >
-              <Icons.search className="mr-2 h-4 w-4" />
-              Find a workshop
-            </Link>
-            <WorkshopCreateButton
-              className={cn(buttonVariants({ variant: "default" }))}
             />
           </EmptyPlaceholder>
         )}

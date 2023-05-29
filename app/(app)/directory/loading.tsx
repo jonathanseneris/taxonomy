@@ -6,7 +6,7 @@ import { WorkshopListing } from "@/components/workshop-listing"
 export default function DashboardLoading() {
   return (
     <DashboardShell>
-      <DashboardHeader heading="Posts" text="Create and manage posts.">
+      <DashboardHeader heading="Directory" text="Find a workshop.">
         <WorkshopCreateButton />
       </DashboardHeader>
       <div className="divide-border-200 divide-y rounded-md border">

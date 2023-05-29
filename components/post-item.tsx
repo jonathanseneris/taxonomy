@@ -3,7 +3,7 @@ import { Post } from "@prisma/client"
 
 import { formatDate } from "@/lib/utils"
 import { Skeleton } from "@/components/ui/skeleton"
-import { PostOperations } from "@/components/post-operations"
+import { WorkshopOperations } from "@/components/workshop-operations"
 
 interface PostItemProps {
   post: Pick<Post, "id" | "title" | "published" | "createdAt">
@@ -25,7 +25,7 @@ export function PostItem({ post }: PostItemProps) {
           </p>
         </div>
       </div>
-      <PostOperations post={{ id: post.id, title: post.title }} />
+      <WorkshopOperations post={{ id: post.id, title: post.title }} />
     </div>
   )
 }

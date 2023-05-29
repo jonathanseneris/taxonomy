@@ -11,7 +11,6 @@ import { db } from "@/lib/db"
 const postmarkClient = new Client(env.POSTMARK_API_TOKEN)
 
 export const authOptions: NextAuthOptions = {
-  // huh any! I know.
   // This is a temporary fix for prisma client.
   // @see https://github.com/prisma/prisma/issues/16117
   adapter: PrismaAdapter(db as any),
@@ -27,7 +26,7 @@ export const authOptions: NextAuthOptions = {
       clientSecret: env.GITHUB_CLIENT_SECRET,
     }),
     EmailProvider({
-      // server: process.env.EMAIL_SERVER,
+      server: env.EMAIL_SERVER,
       from: env.SMTP_FROM,
       sendVerificationRequest: async ({ identifier, url, provider }) => {
         console.log("-----start", identifier, url, provider)
@@ -41,23 +40,18 @@ export const authOptions: NextAuthOptions = {
         })
 
         console.log("user", user)
-        if (!user) {
-          throw new Error("no user")
-        }
-
-        console.log("user", user)
-        const msg = {
-          to: user.email, // Change to your recipient
-          dynamic_template_data: {
-            login_url: url,
-          },
-          template_id: "d-4929bc32e1b74438879784171dbff8d5",
-
-          // from: 'hi@madge.io', // Change to your verified sender
-          // subject: 'Login to Madge',
-          // text: 'and easy to do anywhere, even with Node.js',
-          // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-        }
+        // const msg = {
+        //   to: identifier, // Change to your recipient
+        //   dynamic_template_data: {
+        //     login_url: url,
+        //   },
+        //   template_id: "d-4929bc32e1b74438879784171dbff8d5",
+        //
+        //   // from: 'hi@madge.io', // Change to your verified sender
+        //   // subject: 'Login to Madge',
+        //   // text: 'and easy to do anywhere, even with Node.js',
+        //   // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+        // }
 
         const templateId = user?.emailVerified
           ? env.POSTMARK_SIGN_IN_TEMPLATE
@@ -69,7 +63,7 @@ export const authOptions: NextAuthOptions = {
         const result = await postmarkClient.sendEmailWithTemplate({
           TemplateId: parseInt(templateId),
           To: identifier,
-          From: env.SMTP_FROM, //provider.from as string,
+          From: provider.from as string, //env.SMTP_FROM,
           TemplateModel: {
             action_url: url,
             product_name: siteConfig.name,
@@ -92,32 +86,25 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async session({ token, session }) {
-      console.log("token", token)
-      console.log("session", session)
       if (token) {
         session.user.id = token.id
         session.user.name = token.name
         session.user.email = token.email
       }
-      console.log("session105", session)
       return session
     },
     async jwt({ token, user }) {
-      console.log("token", token)
-      console.log("user", user)
       const dbUser = await db.user.findFirst({
         where: {
-          email: token.email,
+          email: token?.email ? token.email : "",
         },
       })
-      console.log("user", user)
       if (!dbUser) {
         if (user) {
           token.id = user?.id
         }
         return token
       }
-      console.log("dbUser", dbUser)
       return {
         id: dbUser.id,
         name: dbUser.name,

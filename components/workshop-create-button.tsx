@@ -60,7 +60,7 @@ export function WorkshopCreateButton({
 
   return (
     <Link
-      href="/app/workshop/new"
+      href="/workshop/new"
       // onClick={onClick}
       className={cn(
         buttonVariants({ variant }),
