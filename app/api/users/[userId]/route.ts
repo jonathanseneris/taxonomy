@@ -1,8 +1,8 @@
+import getEM from "@/orm/getEM"
 import { getServerSession } from "next-auth/next"
 import { z } from "zod"
 
 import { authOptions } from "@/lib/auth"
-import { db } from "@/lib/db"
 import { userNameSchema } from "@/lib/validations/user"
 
 const routeContextSchema = z.object({
@@ -30,14 +30,11 @@ export async function PATCH(
     const payload = userNameSchema.parse(body)
 
     // Update the user.
-    await db.user.update({
-      where: {
-        id: session.user.id,
-      },
-      data: {
-        name: payload.name,
-      },
-    })
+    const em = await getEM()
+    await em.findOne(Users, session.user.id)
+    user.name = payload.name
+
+    em.flush()
 
     return new Response(null, { status: 200 })
   } catch (error) {

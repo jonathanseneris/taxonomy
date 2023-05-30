@@ -1,8 +1,9 @@
 import { headers } from "next/headers"
+import { Users } from "@/entities"
+import getEM from "@/orm/getEM"
 import Stripe from "stripe"
 
 import { env } from "@/env.mjs"
-import { db } from "@/lib/db"
 import { stripe } from "@/lib/stripe"
 
 export async function POST(req: Request) {
@@ -22,6 +23,7 @@ export async function POST(req: Request) {
   }
 
   const session = event.data.object as Stripe.Checkout.Session
+  const em = await getEM()
 
   if (event.type === "checkout.session.completed") {
     // Retrieve the subscription details from Stripe.
@@ -32,39 +34,35 @@ export async function POST(req: Request) {
     // Update the user stripe into in our database.
     // Since this is the initial subscription, we need to update
     // the subscription id and customer id.
-    await db.user.update({
-      where: {
-        id: session?.metadata?.userId,
-      },
-      data: {
-        stripeSubscriptionId: subscription.id,
-        stripeCustomerId: subscription.customer as string,
-        stripePriceId: subscription.items.data[0].price.id,
-        stripeCurrentPeriodEnd: new Date(
-          subscription.current_period_end * 1000
-        ),
-      },
-    })
+    const user = await em.findOne(Users, session?.metadata?.userId)
+    if (!user) {
+      return new Response(null, { status: 500 })
+    }
+    user.stripeSubscriptionId = subscription.id
+    user.stripeCustomerId = subscription.customer as string
+    user.stripePriceId = subscription.items.data[0].price.id
+    user.stripeCurrentPeriodEnd = new Date(
+      subscription.current_period_end * 1000
+    )
+    await em.flush()
   }
-
   if (event.type === "invoice.payment_succeeded") {
     // Retrieve the subscription details from Stripe.
     const subscription = await stripe.subscriptions.retrieve(
       session.subscription as string
     )
 
-    // Update the price id and set the new period end.
-    await db.user.update({
-      where: {
-        stripeSubscriptionId: subscription.id,
-      },
-      data: {
-        stripePriceId: subscription.items.data[0].price.id,
-        stripeCurrentPeriodEnd: new Date(
-          subscription.current_period_end * 1000
-        ),
-      },
+    const user = await em.findOne(Users, {
+      stripeSubscriptionId: subscription.id,
     })
+    // Update the price id and set the new period end.
+    if (!user) {
+      return new Response(null, { status: 500 })
+    }
+    user.stripePriceId = subscription.items.data[0].price.id
+    user.stripeCurrentPeriodEnd = new Date(
+      subscription.current_period_end * 1000
+    )
   }
 
   return new Response(null, { status: 200 })

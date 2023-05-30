@@ -21,13 +21,8 @@ module.exports = {
   importOrderSortSpecifiers: true,
   importOrderBuiltinModulesToTop: true,
   semi: false,
-  importOrderParserPlugins: [
-    "typescript",
-    "jsx",
-    "prisma",
-    "decorators-legacy",
-  ],
+  importOrderParserPlugins: ["typescript", "jsx", "decorators-legacy"],
   importOrderMergeDuplicateImports: true,
   importOrderCombineTypeAndValueImports: true,
-  plugins: ["@ianvs/prettier-plugin-sort-imports", "prettier-plugin-prisma"],
+  plugins: ["@ianvs/prettier-plugin-sort-imports"],
 }

@@ -1,23 +1,24 @@
 // @ts-nocheck
 // TODO: Fix this when we turn strict mode on.
+
+import { Users } from "@/entities/Users"
+import { User } from "lucide-react"
+
 import { UserSubscriptionPlan } from "types"
 import { freePlan, proPlan } from "@/config/subscriptions"
-import { db } from "@/lib/db"
 
 export async function getUserSubscriptionPlan(
   userId: string
 ): Promise<UserSubscriptionPlan> {
-  const user = await db.user.findFirst({
-    where: {
-      id: userId,
-    },
-    select: {
-      stripeSubscriptionId: true,
-      stripeCurrentPeriodEnd: true,
-      stripeCustomerId: true,
-      stripePriceId: true,
-    },
-  })
+  const em = await getEM()
+  const user = await em.findOne(Users, userId)
+  //   select: {
+  //     stripeSubscriptionId: true,
+  //     stripeCurrentPeriodEnd: true,
+  //     stripeCustomerId: true,
+  //     stripePriceId: true,
+  //   },
+  // })
 
   if (!user) {
     throw new Error("User not found")

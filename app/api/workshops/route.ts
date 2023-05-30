@@ -1,12 +1,13 @@
+import { Workshops } from "@/entities"
+import getEM from "@/orm/getEM"
 import { WorkshopModel } from "@/prisma/zod/workshop"
 import { getServerSession } from "next-auth/next"
 import * as z from "zod"
 
 import { authOptions } from "@/lib/auth"
-import { db } from "@/lib/db"
 import { RequiresProPlanError } from "@/lib/exceptions"
 
-export async function GET() {
+export async function GET(req) {
   console.log(10, "go")
   const session = await getServerSession(authOptions)
 
@@ -17,15 +18,14 @@ export async function GET() {
   // const { user } = session
 
   try {
-    const workshops = await db.workshop.findMany({
-      select: {
-        id: true,
-        name: true,
-        createdAt: true,
-      }, // where: {
-      //   createdBy: user.id,
-      // },
-    })
+    const em = await getEM(req)
+    const workshops = await em.find(
+      Workshops,
+      { createdBy: user.id },
+      {
+        attributes: ["id", "name", "createdAt"],
+      }
+    )
 
     return new Response(JSON.stringify(workshops), { status: 200 })
   } catch (error) {
@@ -71,12 +71,10 @@ export async function POST(req: Request) {
 
     const data = WorkshopModel.parse(newWorkshop)
     console.log("passed data", data)
-    const workshop = await db.workshop.create({
-      data,
-      select: {
-        id: true,
-      },
-    })
+    const em = await getEM(req)
+    const workshop = new Workshops()
+    Object.assign(workshop, data)
+    await em.persistAndFlush(workshop)
 
     return new Response(JSON.stringify(workshop), { status: 200 })
   } catch (error) {

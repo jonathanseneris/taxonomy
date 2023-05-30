@@ -1,11 +1,11 @@
 import * as React from "react"
 import Link from "next/link"
 import { notFound, redirect } from "next/navigation"
-import { User, Workshop } from "@prisma/client"
+import { Workshops } from "@/entities"
+import getEM from "@/orm/getEM"
 import { format } from "date-fns"
 
 import { authOptions } from "@/lib/auth"
-import { db } from "@/lib/db"
 import { getCurrentUser } from "@/lib/session"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
@@ -16,13 +16,9 @@ import { DashboardShell } from "@/components/shell"
 
 async function getWorkshop(workshopId: Workshop["id"], userId: User["id"]) {
   console.log("workshopId", workshopId)
-  return await db.workshop.findFirst({
-    where: {
-      id: workshopId, // authorId: userId,
-    },
-    include: {
-      createdBy: true,
-    },
+  const em = await getEM()
+  return await em.findOne(Workshops, workshopId, {
+    populate: ["createdBy"],
   })
 }
 
@@ -30,7 +26,7 @@ interface WorkshopPageProps {
   params: { id: string }
 }
 
-export default async function EditorPage({ params }: WorkshopPageProps) {
+export default async function WorkshopPage({ params }: WorkshopPageProps) {
   const isSaving = false
   const user = await getCurrentUser()
 

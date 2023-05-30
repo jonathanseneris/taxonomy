@@ -1,21 +1,20 @@
-import { MikroOrmAdapter } from "@next-auth/mikro-orm-adapter";
-import { NextAuthOptions } from "next-auth";
-import EmailProvider from "next-auth/providers/email";
-import GitHubProvider from "next-auth/providers/github";
-import { Client } from "postmark";
+import { Users } from "@/entities"
+import getEM from "@/orm/getEM"
+import { MikroOrmAdapter } from "@next-auth/mikro-orm-adapter"
+import { NextAuthOptions } from "next-auth"
+import EmailProvider from "next-auth/providers/email"
+import GitHubProvider from "next-auth/providers/github"
+import { Client } from "postmark"
 
 import { env } from "@/env.mjs"
 import { siteConfig } from "@/config/site"
-import { db } from "@/lib/db"
 
 const postmarkClient = new Client(env.POSTMARK_API_TOKEN)
 
 export const authOptions: NextAuthOptions = {
-  // This is a temporary fix for prisma client.
-  // @see https://github.com/prisma/prisma/issues/16117
   adapter: MikroOrmAdapter({
     // MikroORM options object. Ref: https://mikro-orm.io/docs/next/configuration#driver
-    clientUrl: process.env.DATABASE_URL,
+    clientUrl: env.DATABASE_URL,
     type: "postgresql",
     debug: process.env.DEBUG === "true" || process.env.DEBUG?.includes("db"),
   }),
@@ -35,14 +34,17 @@ export const authOptions: NextAuthOptions = {
       from: env.SMTP_FROM,
       sendVerificationRequest: async ({ identifier, url, provider }) => {
         console.log("-----start", identifier, url, provider)
-        const user = await db.user.findUnique({
-          where: {
+        const em = await getEM()
+        console.log(40)
+        const user = await em.findOne(
+          Users,
+          {
             email: identifier,
-          },
-          select: {
-            emailVerified: true,
-          },
-        })
+          }
+          // select: {
+          //   emailVerified: true,
+          // },
+        )
 
         console.log("user", user)
         // const msg = {
@@ -99,11 +101,11 @@ export const authOptions: NextAuthOptions = {
       return session
     },
     async jwt({ token, user }) {
-      const dbUser = await db.user.findFirst({
-        where: {
-          email: token?.email ? token.email : "",
-        },
+      const em = await getEM()
+      const dbUser = await em.findOne(Users, {
+        email: token?.email ? token.email : "",
       })
+
       if (!dbUser) {
         if (user) {
           token.id = user?.id

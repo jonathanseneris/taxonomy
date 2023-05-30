@@ -1,18 +1,17 @@
-import { notFound, redirect } from "next/navigation"
-import { Post, User } from "@prisma/client"
+import { redirect } from "next/navigation"
 
 import { authOptions } from "@/lib/auth"
-import { db } from "@/lib/db"
 import { getCurrentUser } from "@/lib/session"
 import { Editor } from "@/components/editor"
 
-async function getPostForUser(postId: Post["id"], userId: User["id"]) {
-  return await db.post.findFirst({
-    where: {
-      id: postId,
-      authorId: userId,
-    },
-  })
+async function getPostForUser(postId, userId) {
+  // const em =await getEM()
+  // return await db.post.findFirst({
+  //   where: {
+  //     id: postId,
+  //     authorId: userId,
+  //   },
+  // })
 }
 
 interface EditorPageProps {
@@ -26,11 +25,12 @@ export default async function EditorPage({ params }: EditorPageProps) {
     redirect(authOptions?.pages?.signIn || "/login")
   }
 
-  const post = await getPostForUser(params.postId, user.id)
-
-  if (!post) {
-    notFound()
-  }
+  const post = {}
+  // const post = await getPostForUser(params.postId, user.id)
+  //
+  // if (!post) {
+  //   notFound()
+  // }
 
   return (
     <Editor

@@ -2,10 +2,10 @@ import * as React from "react"
 import { cache } from "react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import { User } from "@prisma/client"
+import { Workshops } from "@/entities"
+import getEM from "@/orm/getEM"
 
 import { authOptions } from "@/lib/auth"
-import { db } from "@/lib/db"
 import { getCurrentUser } from "@/lib/session"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
@@ -20,21 +20,25 @@ export const metadata = {
   title: "Dashboard",
 }
 
-const getWorkshopsForUser = cache(async (userId: User["id"]) => {
-  return await db.workshops.findMany({
-    where: {
+const getWorkshopsForUser = cache(async (userId) => {
+  const em = await getEM()
+  return await em.find(
+    Workshops,
+    {
       authorId: userId,
     },
-    select: {
-      id: true,
-      title: true,
-      published: true,
-      createdAt: true,
-    },
-    orderBy: {
-      updatedAt: "desc",
-    },
-  })
+    {
+      select: {
+        id: true,
+        title: true,
+        published: true,
+        createdAt: true,
+      },
+      orderBy: {
+        updatedAt: "desc",
+      },
+    }
+  )
 })
 
 export default async function DashboardPage() {

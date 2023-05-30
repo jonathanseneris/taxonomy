@@ -1,9 +1,8 @@
 import { cache } from "react"
 import { redirect } from "next/navigation"
-import { User } from "@prisma/client"
+import { Workshops } from "@/entities"
 
 import { authOptions } from "@/lib/auth"
-import { db } from "@/lib/db"
 import { getCurrentUser } from "@/lib/session"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
@@ -18,21 +17,19 @@ export const metadata = {
 }
 
 const getWorkshops = cache(async () => {
-  return await db.workshop.findMany({
-    where: {
+  const em = await getEM()
+  return await em.find(
+    Workshops,
+    {
       open: true,
     },
-    select: {
-      id: true,
-      name: true,
-      createdBy: true,
-      createdAt: true,
-      startDate: true,
-    },
-    orderBy: {
-      startDate: "desc",
-    },
-  })
+    {
+      attributes: ["id", "name", "createdBy", "createdAt", "startDate"],
+      orderBy: {
+        startDate: "desc",
+      },
+    }
+  )
 })
 
 export default async function DirectoryPage() {
