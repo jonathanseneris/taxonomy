@@ -11,9 +11,9 @@ import { Users } from "@/entities/Users"
 import { UsersLogins } from "@/entities/UsersLogins"
 import { Workshops } from "@/entities/Workshops"
 
-import * as entityFiles from "./entities"
+// import * as entityFiles from "./entities"
 
-const entities = Object.keys(entityFiles).map((key) => entityFiles[key])
+// const entities = Object.keys(entityFiles).map((key) => entityFiles[key])
 
 const config = {
   clientUrl: "postgresql://jonathanseneris@localhost:5432/madge", //env.DATABASE_URL,
@@ -30,7 +30,7 @@ const config = {
     Users,
     UsersLogins,
   ],
-  entitiesTs: [`${__dirname}/entities/**/*.ts`],
+  // entitiesTs: [`${__dirname}/entities/**/*.ts`],
   debug: true,
 }
 

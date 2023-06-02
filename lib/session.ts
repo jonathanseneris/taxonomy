@@ -1,9 +1,7 @@
-import { getServerSession } from "next-auth/next"
-
-import { authOptions } from "@/lib/auth"
+import { auth } from "@clerk/nextjs"
 
 export async function getCurrentUser() {
-  const session = await getServerSession(authOptions)
+  const { userId } = auth()
 
-  return session?.user
+  return userId
 }

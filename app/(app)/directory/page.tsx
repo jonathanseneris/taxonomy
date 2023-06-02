@@ -17,19 +17,19 @@ export const metadata = {
 }
 
 const getWorkshops = cache(async () => {
-  const em = await getEM()
-  return await em.find(
-    Workshops,
-    {
-      open: true,
-    },
-    {
-      attributes: ["id", "name", "createdBy", "createdAt", "startDate"],
-      orderBy: {
-        startDate: "desc",
-      },
-    }
-  )
+  // const em = await getEM()
+  // return await em.find(
+  //   Workshops,
+  //   {
+  //     open: true,
+  //   },
+  //   {
+  //     attributes: ["id", "name", "createdBy", "createdAt", "startDate"],
+  //     orderBy: {
+  //       startDate: "desc",
+  //     },
+  //   }
+  // )
 })
 
 export default async function DirectoryPage() {

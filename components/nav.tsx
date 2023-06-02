@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { UserButton } from "@clerk/nextjs"
 
 import { SidebarNavItem } from "types"
 import { cn } from "@/lib/utils"
@@ -39,6 +40,7 @@ export function DashboardNav({ items }: DashboardNavProps) {
           )
         )
       })}
+      <UserButton afterSignOutUrl="/" />
     </nav>
   )
 }
