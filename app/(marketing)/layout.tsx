@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { UserButton } from "@clerk/nextjs"
 
 import { marketingConfig } from "@/config/marketing"
 import { cn } from "@/lib/utils"
@@ -30,6 +31,7 @@ export default async function MarketingLayout({
             </Link>
           </nav>
         </div>
+        <UserButton afterSignOutUrl="/" />
       </header>
       <main className="flex-1">{children}</main>
       <SiteFooter />

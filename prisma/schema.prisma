@@ -3,207 +3,222 @@ generator client {
 }
 
 generator zod {
-  provider = "zod-prisma"
-  output   = "./zod" // (default) the directory where generated zod schemas will be saved
-
-  relationModel = true // (default) Create and export both plain and related models.
-  // relationModel         = "default" // Do not export model without relations.
-  // relationModel         = false // Do not generate related model
-
-  modelCase = "PascalCase" // (default) Output models using pascal case (ex. UserModel, PostModel)
-  // modelCase             = "camelCase" // Output models using camel case (ex. userModel, postModel)
-
-  modelSuffix = "Model" // (default) Suffix to apply to your prisma models when naming Zod schemas
-
-  // useDecimalJs          = false // (default) represent the prisma Decimal type using as a JS number
-  useDecimalJs = true // represent the prisma Decimal type using Decimal.js (as Prisma does)
-
-  imports = null // (default) will import the referenced file in generated schemas to be used via imports.someExportedVariable
-
-  // https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-by-null-values
-  prismaJsonNullability = true // (default) uses prisma's scheme for JSON field nullability
-  // prismaJsonNullability = false // allows null assignment to optional JSON fields
+  provider              = "zod-prisma"
+  output                = "./zod"
+  relationModel         = "true"
+  imports               = "null"
+  prismaJsonNullability = "true"
+  modelCase             = "PascalCase"
+  modelSuffix           = "Model"
+  useDecimalJs          = "true"
 }
 
 datasource db {
   provider = "postgres"
-  url      = "postgresql://jonathanseneris@localhost:5432/madge"
-}
-
-model Account {
-  id                String   @id @default(cuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?  @db.Text
-  access_token      String?  @db.Text
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?  @db.Text
-  session_state     String?
-  createdAt         DateTime @default(now()) @map(name: "created_at")
-  updatedAt         DateTime @default(now()) @map(name: "updated_at")
-  user              User     @relation(fields: [userId], references: [id])
-
-  @@unique([provider, providerAccountId])
-  @@map(name: "accounts")
-}
-
-model Application {
-  id              String   @id @default(cuid())
-  submittedOn     DateTime @db.Timestamptz(0)
-  viewedOn        DateTime @db.Timestamptz(0)
-  statusChangedOn DateTime @db.Timestamptz(0)
-  status          String   @default("Draft") @db.VarChar(255)
-  statement       String   @default("")
-  about           String   @default("")
-  sample          String   @default("")
-  user            User     @relation(fields: [userId], references: [id])
-  workshop        Workshop @relation(fields: [workshopId], references: [id])
-  userId          String
-  workshopId      String   @db.VarChar(255)
-}
-
-model EmailSent {
-  id        Int      @id @default(autoincrement())
-  to        String   @db.VarChar(255)
-  subject   String   @db.VarChar(255)
-  html      String   @default("")
-  createdAt DateTime @db.Timestamptz(0)
-}
-
-model Meeting {
-  id               Int          @id @default(autoincrement())
-  startTime        DateTime     @db.Timestamptz(0)
-  meetingAttendees User[]
-  submissions      Submission[]
-  Workshop         Workshop     @relation(fields: [workshopId], references: [id])
-  workshopId       String       @db.VarChar(255)
-}
-
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  User         User     @relation(fields: [userId], references: [id])
-
-  @@map(name: "sessions")
-}
-
-model SubmissionReview {
-  id           Int        @id @default(autoincrement())
-  date         DateTime   @db.Timestamptz(0)
-  lastUpdate   DateTime   @db.Timestamptz(0)
-  submission   Submission @relation(fields: [submissionId], references: [id])
-  user         User       @relation(fields: [userId], references: [id])
-  workshop     Workshop   @relation(fields: [workshopId], references: [id])
-  submissionId String     @db.VarChar(255)
-  userId       String
-  workshopId   String     @db.VarChar(255)
-}
-
-model SubmissionSlot {
-  id             Int         @id @default(autoincrement())
-  workshopId     String      @db.VarChar(255)
-  dueDate        DateTime    @db.Timestamptz(0)
-  workshopDate   DateTime    @db.Timestamptz(0)
-  createdAt      DateTime    @db.Timestamptz(0)
-  lastModifiedAt DateTime    @db.Timestamptz(0)
-  Submission     Submission? @relation(fields: [submissionId], references: [id])
-  User           User?       @relation(fields: [userId], references: [id])
-  Workshop       Workshop    @relation(fields: [workshopId], references: [id])
-  submissionId   String?     @db.VarChar(255)
-  userId         String?
-}
-
-model Submission {
-  id                String             @id @default(cuid())
-  title             String             @db.VarChar(255)
-  submissionDueDate DateTime           @db.Timestamptz(0)
-  submissionDate    DateTime           @db.Timestamptz(0)
-  password          String?            @db.VarChar(255)
-  content           String             @default("")
-  reviews           SubmissionReview[]
-  Meeting           Meeting?           @relation(fields: [meetingId], references: [id])
-  User              User?              @relation(fields: [userId], references: [id])
-  Workshop          Workshop?          @relation(fields: [workshopId], references: [id])
-  SubmissionSlot    SubmissionSlot[]
-  meetingId         Int?
-  userId            String?
-  workshopId        String?            @db.VarChar(255)
-}
-
-model Tag {
-  name        String  @id @default(cuid())
-  category    String? @db.VarChar(255)
-  displayName String  @db.VarChar(255)
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id       String    @id @default(cuid())
-  image    String?
-  sessions Session[]
+  id                                                        String               @id @default(cuid()) @db.VarChar(255)
+  image                                                     String?
+  stripeCustomerId                                          String?              @unique @map("stripe_customer_id")
+  stripeSubscriptionId                                      String?              @unique @map("stripe_subscription_id")
+  stripePriceId                                             String?              @map("stripe_price_id")
+  stripeCurrentPeriodEnd                                    DateTime?            @map("stripe_current_period_end")
+  email                                                     String               @unique(map: "user_email_unique") @db.VarChar(255)
+  emailVerified                                             DateTime?            @db.Timestamptz(0)
+  bio                                                       String               @default("")
+  name                                                      String               @default("") @db.VarChar(255)
+  active                                                    Boolean              @default(true)
+  confirmed                                                 Boolean              @default(false)
+  location                                                  String               @default("") @db.VarChar(255)
+  first_name                                                String               @default("") @db.VarChar(255)
+  middle_name                                               String               @default("") @db.VarChar(255)
+  last_name                                                 String               @default("") @db.VarChar(255)
+  phone                                                     String               @default("") @db.VarChar(255)
+  created_at                                                DateTime             @db.Timestamptz(0)
+  last_modified_at                                          DateTime             @db.Timestamptz(0)
+  applications                                              applications[]
+  meetings_attendees                                        meetings_attendees[]
+  meetings_invitees                                         meetings_invitees[]
+  submission_reviews_submission_reviews_reviewer_idTousers  submission_reviews[] @relation("submission_reviews_reviewer_idTousers")
+  submission_reviews_submission_reviews_submitter_idTousers submission_reviews?  @relation("submission_reviews_submitter_idTousers")
+  submission_slots                                          submission_slots?
+  submissions                                               submissions[]
+  users_logins                                              users_logins[]
+  users_workshops                                           users_workshops[]
+  workshops                                                 workshops[]
+  workshops_users                                           workshops_users[]
 
-  stripeCustomerId       String?   @unique @map(name: "stripe_customer_id")
-  stripeSubscriptionId   String?   @unique @map(name: "stripe_subscription_id")
-  stripePriceId          String?   @map(name: "stripe_price_id")
-  stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")
-
-  email            String             @unique(map: "user_email_unique") @db.VarChar(255)
-  emailVerified    DateTime?          @db.Timestamptz(0)
-  bio              String             @default("")
-  name             String?            @default("")
-  firstName        String?            @default("")
-  middleName       String?            @default("")
-  lastName         String?            @default("")
-  active           Boolean            @default(true)
-  confirmed        Boolean            @default(false)
-  location         String             @default("")
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @default(now())
-  lastModifiedAt   DateTime           @default(now())
-  isLockedOut      Boolean            @default(false)
-  accounts         Account[]
-  applications     Application[]
-  submissionSlots  SubmissionSlot[]
-  submissions      Submission[]
-  workshops        Workshop[]
-  Meeting          Meeting?           @relation(fields: [meetingId], references: [id])
-  meetingId        Int?
-  SubmissionReview SubmissionReview[]
-
-  @@map(name: "users")
+  @@map("users")
 }
 
-model Workshop {
-  id               String             @id @default(cuid()) // @zod.optional()
-  targetSize       Int
-  startDate        DateTime           @db.Timestamptz(0)
-  paid             Boolean            @default(false)
-  price            Decimal?           @db.Decimal(10, 0)
-  submissionLength String             @db.VarChar(255)
-  name             String             @db.VarChar(255)
-  description      String             @default("")
-  open             Boolean            @default(true)
-  archived         Boolean            @default(false)
-  applications     Application[]
-  meetings         Meeting[]
-  submissionSlots  SubmissionSlot[]
-  submissions      Submission[]
-  SubmissionReview SubmissionReview[]
-  userId           String
-  createdBy        User               @relation(fields: [userId], references: [id])
-  createdAt        DateTime?          @db.Timestamptz(0)
+model applications {
+  id                String    @id @db.VarChar(255)
+  user_id           String    @db.VarChar(255)
+  workshop_id       String    @db.VarChar(255)
+  submitted_on      DateTime  @db.Timestamptz(0)
+  viewed_on         DateTime  @db.Timestamptz(0)
+  status_changed_on DateTime  @db.Timestamptz(0)
+  status            String    @default("Draft") @db.VarChar(255)
+  statement         String    @default("")
+  about             String    @default("")
+  sample            String    @default("")
+  users             User      @relation(fields: [user_id], references: [id], onDelete: NoAction, map: "applications_user_id_foreign")
+  workshops         workshops @relation(fields: [workshop_id], references: [id], onDelete: NoAction, map: "applications_workshop_id_foreign")
 }
 
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
+model emails_sent {
+  id         Int      @id @default(autoincrement())
+  to         String   @db.VarChar(255)
+  subject    String   @db.VarChar(255)
+  html       String   @default("")
+  created_at DateTime @db.Timestamptz(0)
+}
 
-  @@unique([identifier, token])
-  @@map(name: "verification_tokens")
+model meetings {
+  id                 Int                  @id @default(autoincrement())
+  workshop_id        String               @db.VarChar(255)
+  start_time         DateTime             @db.Timestamptz(0)
+  workshops          workshops            @relation(fields: [workshop_id], references: [id], onDelete: NoAction, map: "meetings_workshop_id_foreign")
+  meetings_attendees meetings_attendees[]
+  meetings_invitees  meetings_invitees[]
+  submissions        submissions[]
+}
+
+model meetings_attendees {
+  meetings_id Int
+  users_id    String   @db.VarChar(255)
+  meetings    meetings @relation(fields: [meetings_id], references: [id], onDelete: Cascade, map: "meetings_attendees_meetings_id_foreign")
+  users       User     @relation(fields: [users_id], references: [id], onDelete: Cascade, map: "meetings_attendees_users_id_foreign")
+
+  @@id([meetings_id, users_id])
+}
+
+model meetings_invitees {
+  meetings_id Int
+  users_id    String   @db.VarChar(255)
+  meetings    meetings @relation(fields: [meetings_id], references: [id], onDelete: Cascade, map: "meetings_invitees_meetings_id_foreign")
+  users       User     @relation(fields: [users_id], references: [id], onDelete: Cascade, map: "meetings_invitees_users_id_foreign")
+
+  @@id([meetings_id, users_id])
+}
+
+model mikro_orm_migrations {
+  id          Int       @id @default(autoincrement())
+  name        String?   @db.VarChar(255)
+  executed_at DateTime? @default(now()) @db.Timestamptz(6)
+}
+
+model submission_reviews {
+  id                                           Int         @id @default(autoincrement())
+  submission_id                                String      @db.VarChar(255)
+  reviewer_id                                  String      @db.VarChar(255)
+  workshop_id                                  String      @db.VarChar(255)
+  date                                         DateTime    @db.Timestamptz(0)
+  last_update                                  DateTime    @db.Timestamptz(0)
+  submitter_id                                 String      @unique(map: "submission_reviews_submitter_id_unique") @db.VarChar(255)
+  users_submission_reviews_reviewer_idTousers  User        @relation("submission_reviews_reviewer_idTousers", fields: [reviewer_id], references: [id], onDelete: NoAction, map: "submission_reviews_reviewer_id_foreign")
+  submissions                                  submissions @relation(fields: [submission_id], references: [id], onDelete: NoAction, map: "submission_reviews_submission_id_foreign")
+  users_submission_reviews_submitter_idTousers User        @relation("submission_reviews_submitter_idTousers", fields: [submitter_id], references: [id], onDelete: NoAction, map: "submission_reviews_submitter_id_foreign")
+  workshops                                    workshops   @relation(fields: [workshop_id], references: [id], onDelete: NoAction, map: "submission_reviews_workshop_id_foreign")
+}
+
+model submission_slots {
+  id               Int         @id @default(autoincrement())
+  workshop_id      String      @db.VarChar(255)
+  due_date         DateTime    @db.Timestamptz(0)
+  workshop_date    DateTime    @db.Timestamptz(0)
+  submitter_id     String      @unique(map: "submission_slots_submitter_id_unique") @db.VarChar(255)
+  submission_id    String      @unique(map: "submission_slots_submission_id_unique") @db.VarChar(255)
+  created_at       DateTime    @db.Timestamptz(0)
+  last_modified_at DateTime    @db.Timestamptz(0)
+  submissions      submissions @relation(fields: [submission_id], references: [id], onDelete: NoAction, map: "submission_slots_submission_id_foreign")
+  users            User        @relation(fields: [submitter_id], references: [id], onDelete: NoAction, map: "submission_slots_submitter_id_foreign")
+  workshops        workshops   @relation(fields: [workshop_id], references: [id], onDelete: NoAction, map: "submission_slots_workshop_id_foreign")
+}
+
+model submissions {
+  id                  String               @id @db.VarChar(255)
+  title               String               @db.VarChar(255)
+  author_id           String               @db.VarChar(255)
+  workshop_id         String               @db.VarChar(255)
+  submission_due_date DateTime             @db.Timestamptz(0)
+  submission_date     DateTime             @db.Timestamptz(0)
+  meeting_id          Int
+  password            String?              @db.VarChar(255)
+  content             String               @default("")
+  submission_reviews  submission_reviews[]
+  submission_slots    submission_slots?
+  users               User                 @relation(fields: [author_id], references: [id], onDelete: NoAction, map: "submissions_author_id_foreign")
+  meetings            meetings             @relation(fields: [meeting_id], references: [id], onDelete: NoAction, map: "submissions_meeting_id_foreign")
+  workshops           workshops            @relation(fields: [workshop_id], references: [id], onDelete: NoAction, map: "submissions_workshop_id_foreign")
+}
+
+model tags {
+  name           String           @id @db.VarChar(255)
+  display_name   String           @db.VarChar(255)
+  category       String           @db.VarChar(255)
+  workshops_tags workshops_tags[]
+}
+
+model users_logins {
+  id         BigInt   @id @default(autoincrement())
+  login_time DateTime @db.Timestamptz(0)
+  ip_address String   @default("") @db.VarChar(255)
+  user_id    String   @db.VarChar(255)
+  users      User     @relation(fields: [user_id], references: [id], onDelete: NoAction, map: "users_logins_user_id_foreign")
+
+  @@index([user_id], map: "user_id")
+}
+
+model users_workshops {
+  users_id     String    @db.VarChar(255)
+  workshops_id String    @db.VarChar(255)
+  users        User      @relation(fields: [users_id], references: [id], onDelete: Cascade, map: "users_workshops_users_id_foreign")
+  workshops    workshops @relation(fields: [workshops_id], references: [id], onDelete: Cascade, map: "users_workshops_workshops_id_foreign")
+
+  @@id([users_id, workshops_id])
+}
+
+model workshops {
+  id                 String               @id @db.VarChar(255)
+  target_size        Int
+  start_date         DateTime             @db.Timestamptz(0)
+  paid               Boolean              @default(false)
+  price              Decimal              @db.Decimal(10, 0)
+  submission_length  String               @db.VarChar(255)
+  name               String               @default("") @db.VarChar(255)
+  description        String               @default("")
+  open               Boolean              @default(true)
+  archived           Boolean              @default(false)
+  leader_id          String               @db.VarChar(255)
+  leader_bio         String               @default("") @db.VarChar(255)
+  applications       applications[]
+  meetings           meetings[]
+  submission_reviews submission_reviews[]
+  submission_slots   submission_slots[]
+  submissions        submissions[]
+  users_workshops    users_workshops[]
+  users              User                 @relation(fields: [leader_id], references: [id], onDelete: NoAction, map: "workshops_leader_id_foreign")
+  workshops_tags     workshops_tags[]
+  workshops_users    workshops_users[]
+}
+
+model workshops_tags {
+  workshops_id String    @db.VarChar(255)
+  tags_name    String    @db.VarChar(255)
+  tags         tags      @relation(fields: [tags_name], references: [name], onDelete: Cascade, map: "workshops_tags_tags_name_foreign")
+  workshops    workshops @relation(fields: [workshops_id], references: [id], onDelete: Cascade, map: "workshops_tags_workshops_id_foreign")
+
+  @@id([workshops_id, tags_name])
+}
+
+model workshops_users {
+  workshops_id String    @db.VarChar(255)
+  users_id     String    @db.VarChar(255)
+  users        User      @relation(fields: [users_id], references: [id], onDelete: Cascade, map: "workshops_users_users_id_foreign")
+  workshops    workshops @relation(fields: [workshops_id], references: [id], onDelete: Cascade, map: "workshops_users_workshops_id_foreign")
+
+  @@id([workshops_id, users_id])
 }

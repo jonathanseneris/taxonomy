@@ -1,4 +1,5 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
+import { PrismaClient } from "@prisma/client"
 import { NextAuthOptions } from "next-auth"
 import EmailProvider from "next-auth/providers/email"
 import GitHubProvider from "next-auth/providers/github"
@@ -30,6 +31,11 @@ export const authOptions: NextAuthOptions = {
       from: env.SMTP_FROM,
       sendVerificationRequest: async ({ identifier, url, provider }) => {
         console.log("-----start", identifier, url, provider)
+        const prisma = new PrismaClient()
+        console.log("connecting")
+        await prisma.$connect()
+        console.log("connected")
+
         const user = await db.user.findUnique({
           where: {
             email: identifier,
@@ -40,6 +46,7 @@ export const authOptions: NextAuthOptions = {
         })
 
         console.log("user", user)
+        return
         // const msg = {
         //   to: identifier, // Change to your recipient
         //   dynamic_template_data: {

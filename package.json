@@ -16,6 +16,7 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@clerk/nextjs": "^4.19.0",
     "@editorjs/code": "^2.8.0",
     "@editorjs/editorjs": "^2.26.5",
     "@editorjs/embed": "^2.5.3",
@@ -71,8 +72,7 @@
     "date-fns": "^2.30.0",
     "decimal.js": "^10.4.3",
     "lucide-react": "^0.220.0",
-    "next": "13.3.2-canary.13",
-    "next-auth": "4.22.1",
+    "next": "13.4.5-canary.0",
     "next-contentlayer": "^0.3.2",
     "next-themes": "^0.2.1",
     "nodemailer": "^6.9.1",

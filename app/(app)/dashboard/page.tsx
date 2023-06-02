@@ -23,23 +23,21 @@ export const metadata = {
 const getWorkshopsForUser = cache(async (userId: User["id"]) => {
   return await db.workshops.findMany({
     where: {
-      authorId: userId,
+      createdBy: userId,
     },
     select: {
       id: true,
-      title: true,
-      published: true,
+      name: true,
+      open: true,
       createdAt: true,
-    },
-    orderBy: {
-      updatedAt: "desc",
     },
   })
 })
 
 export default async function DashboardPage() {
+  console.log("go")
   const user = await getCurrentUser()
-
+  console.log("user", user)
   if (!user) {
     redirect(authOptions?.pages?.signIn || "/login")
   }
