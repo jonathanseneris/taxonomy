@@ -1,5 +1,4 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
-import { PrismaClient } from "@prisma/client"
 import { NextAuthOptions } from "next-auth"
 import EmailProvider from "next-auth/providers/email"
 import GitHubProvider from "next-auth/providers/github"
@@ -12,8 +11,6 @@ import { db } from "@/lib/db"
 const postmarkClient = new Client(env.POSTMARK_API_TOKEN)
 
 export const authOptions: NextAuthOptions = {
-  // This is a temporary fix for prisma client.
-  // @see https://github.com/prisma/prisma/issues/16117
   adapter: PrismaAdapter(db as any),
   session: {
     strategy: "jwt",
@@ -31,10 +28,6 @@ export const authOptions: NextAuthOptions = {
       from: env.SMTP_FROM,
       sendVerificationRequest: async ({ identifier, url, provider }) => {
         console.log("-----start", identifier, url, provider)
-        const prisma = new PrismaClient()
-        console.log("connecting")
-        await prisma.$connect()
-        console.log("connected")
 
         const user = await db.user.findUnique({
           where: {
@@ -45,20 +38,9 @@ export const authOptions: NextAuthOptions = {
           },
         })
 
+        console.log("identifier", identifier)
+        console.log("provider", provider)
         console.log("user", user)
-        return
-        // const msg = {
-        //   to: identifier, // Change to your recipient
-        //   dynamic_template_data: {
-        //     login_url: url,
-        //   },
-        //   template_id: "d-4929bc32e1b74438879784171dbff8d5",
-        //
-        //   // from: 'hi@madge.io', // Change to your verified sender
-        //   // subject: 'Login to Madge',
-        //   // text: 'and easy to do anywhere, even with Node.js',
-        //   // html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-        // }
 
         const templateId = user?.emailVerified
           ? env.POSTMARK_SIGN_IN_TEMPLATE

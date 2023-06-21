@@ -147,14 +147,14 @@ CREATE TABLE "Workshop" (
     "targetSize" INTEGER NOT NULL,
     "startDate" TIMESTAMPTZ(0) NOT NULL,
     "paid" BOOLEAN NOT NULL DEFAULT false,
-    "price" DECIMAL(10,0) NOT NULL,
+    "price" DECIMAL(10,0),
     "submissionLength" VARCHAR(255) NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     "description" TEXT NOT NULL DEFAULT '',
     "open" BOOLEAN NOT NULL DEFAULT true,
     "archived" BOOLEAN NOT NULL DEFAULT false,
-    "createdAt" TIMESTAMPTZ(0),
     "userId" TEXT NOT NULL,
+    "createdAt" TIMESTAMPTZ(0),
 
     CONSTRAINT "Workshop_pkey" PRIMARY KEY ("id")
 );
