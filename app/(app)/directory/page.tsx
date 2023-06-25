@@ -18,6 +18,7 @@ export const metadata = {
 }
 
 const getWorkshops = cache(async () => {
+  console.log(21)
   return await db.workshop.findMany({
     where: {
       open: true,

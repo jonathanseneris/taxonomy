@@ -1,4 +1,5 @@
 import { WorkshopModel } from "@/prisma/zod/workshop"
+import { isValid } from "date-fns"
 import { getServerSession } from "next-auth/next"
 import * as z from "zod"
 
@@ -64,11 +65,13 @@ export async function POST(req: Request) {
     const newWorkshop = {
       ...body,
       userId: session.user.id,
-      createdAt: new Date().toString(),
+      createdAt: new Date(),
       open: true,
       archived: false,
     }
-
+    console.log("new workshop:", newWorkshop)
+    console.log("isValid?", isValid(newWorkshop.startDate))
+    console.log("isValid?", isValid(newWorkshop.createdAt))
     const data = WorkshopModel.parse(newWorkshop)
     console.log("passed data", data)
     const workshop = await db.workshop.create({

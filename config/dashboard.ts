@@ -15,7 +15,7 @@ export const dashboardConfig: DashboardConfig = {
   sidebarNav: [
     {
       title: "Dashboard",
-      href: "/app",
+      href: "/dashboard",
       icon: "dashboard",
     },
     {

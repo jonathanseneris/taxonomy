@@ -20,10 +20,12 @@ export const metadata = {
   title: "Dashboard",
 }
 
+export const dynamic = "force-dynamic"
+
 const getWorkshopsForUser = cache(async (userId: User["id"]) => {
-  return await db.workshops.findMany({
+  return await db.Workshop.findMany({
     where: {
-      createdBy: userId,
+      userId: userId,
     },
     select: {
       id: true,
@@ -41,19 +43,19 @@ export default async function DashboardPage() {
   if (!user) {
     redirect(authOptions?.pages?.signIn || "/login")
   }
-
-  const posts = [] //await getPostsForUser(user.id)
-
+  console.log("user", user)
+  const workshops = await getWorkshopsForUser(user?.id)
+  console.log("workshops", workshops)
   return (
     <DashboardShell>
       <DashboardHeader heading="Dashboard" text="Your workshops at a glance.">
         <WorkshopCreateButton />
       </DashboardHeader>
       <div>
-        {posts?.length ? (
+        {workshops?.length ? (
           <div className="divide-y divide-neutral-200 rounded-md border border-slate-200">
-            {posts.map((post) => (
-              <WorkshopListing key={post.id} post={post} />
+            {workshops.map((workshop) => (
+              <WorkshopListing key={workshop.id} workshop={workshop} />
             ))}
           </div>
         ) : (
