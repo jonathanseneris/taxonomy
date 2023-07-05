@@ -4,7 +4,7 @@ import * as z from "zod"
 import { withMethods } from "@/lib/api-middlewares/with-methods"
 import { withPost } from "@/lib/api-middlewares/with-post"
 import { db } from "@/lib/db"
-import { postPatchSchema } from "@/lib/validations/workshop"
+import { workshopSchema } from "@/lib/validations/workshop"
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "DELETE") {
@@ -34,7 +34,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         throw new Error("Post not found.")
       }
 
-      const body = postPatchSchema.parse(req.body)
+      const body = workshopSchema.parse(req.body)
 
       // TODO: Implement sanitization for content.
       await db.post.update({

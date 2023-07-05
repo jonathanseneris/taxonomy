@@ -25,6 +25,7 @@ const getWorkshops = cache(async () => {
     },
     select: {
       id: true,
+      userId: true,
       name: true,
       createdBy: true,
       createdAt: true,

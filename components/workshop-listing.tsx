@@ -25,7 +25,7 @@ export function WorkshopListing({ workshop }: PostItemProps) {
           </p>
         </div>
       </div>
-      <WorkshopOperations workshop={{ id: workshop.id, name: workshop.name }} />
+      {/*<WorkshopOperations workshop={{ id: workshop.id, name: workshop.name }} />*/}
       {/* <PostDeleteButton workshop={{ id: workshop.id, title: workshop.title }} /> */}
     </div>
   )

@@ -4,9 +4,9 @@ import { CompleteUser, RelatedUserModel, CompleteWorkshop, RelatedWorkshopModel 
 
 export const ApplicationModel = z.object({
   id: z.string(),
-  submittedOn: z.date(),
-  viewedOn: z.date(),
-  statusChangedOn: z.date(),
+  submittedOn: z.date().nullish(),
+  viewedOn: z.date().nullish(),
+  statusChangedOn: z.date().nullish(),
   status: z.string(),
   statement: z.string(),
   about: z.string(),

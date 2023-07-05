@@ -69,6 +69,9 @@ export async function POST(req: Request) {
       open: true,
       archived: false,
     }
+    if (!newWorkshop.paid) {
+      newWorkshop.price = null
+    }
     console.log("new workshop:", newWorkshop)
     console.log("isValid?", isValid(newWorkshop.startDate))
     console.log("isValid?", isValid(newWorkshop.createdAt))

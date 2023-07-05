@@ -118,11 +118,11 @@ const SelectInput = ({ control, name, placeholder, options, required }) => (
         <Select
           onValueChange={field.onChange}
           className="w-[400px]"
-          size={32}
+          size={36}
           {...field}
           required={required}
         >
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[280px]">
             <SelectValue placeholder={placeholder} />
           </SelectTrigger>
           <SelectContent>

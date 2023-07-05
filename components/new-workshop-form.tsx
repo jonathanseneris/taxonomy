@@ -59,7 +59,7 @@ export function NewWorkshopForm({
         targetSize: data.targetSize,
         startDate: data.startDate,
         paid: data.paid,
-        price: data.price,
+        price: data.paid ? data.price : null,
         submissionLength: data.submissionLength,
         open: true,
         archived: false,
@@ -112,6 +112,18 @@ export function NewWorkshopForm({
               className="w-[400px]"
               size={32}
               {...register("name", { required: true, maxLength: 50 })}
+            />
+            {errors?.name && (
+              <p className="px-1 text-xs text-red-600">{errors.name.message}</p>
+            )}
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="tags">Tags</Label>
+            <Input
+              id="tags"
+              className="w-[400px]"
+              size={32}
+              {...register("tags", { required: true, maxLength: 50 })}
             />
             {errors?.name && (
               <p className="px-1 text-xs text-red-600">{errors.name.message}</p>

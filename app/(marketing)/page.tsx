@@ -43,7 +43,7 @@ export default async function IndexPage() {
             The Writing Workshop Platform
           </h1>
           <p className="max-w-[42rem] leading-normal text-slate-700 sm:text-xl sm:leading-8">
-            Find your audience
+            Meet your audience
           </p>
         </div>
         <div className="flex gap-4">

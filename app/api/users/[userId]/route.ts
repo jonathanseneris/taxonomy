@@ -36,6 +36,7 @@ export async function PATCH(
       },
       data: {
         name: payload.name,
+        bio: payload.bio,
       },
     })
 

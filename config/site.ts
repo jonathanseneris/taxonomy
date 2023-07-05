@@ -2,11 +2,11 @@ import { SiteConfig } from "types"
 
 export const siteConfig: SiteConfig = {
   name: "Madge",
-  description: "Find your audience",
+  description: "Meet your audience",
   url: "https://madge.io",
-  ogImage: "https://tx.shadcn.com/og.jpg",
+  ogImage: "https://sener.is/hank.gif",
   links: {
-    twitter: "https://twitter.com/shadcn",
-    github: "https://github.com/shadcn/taxonomy",
+    twitter: "https://twitter.com/hi_madge",
+    github: "https://github.com/himadge/site",
   },
 }

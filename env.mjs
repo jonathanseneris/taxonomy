@@ -1,5 +1,5 @@
-import { createEnv } from "@t3-oss/env-nextjs";
-import { z } from "zod";
+import { createEnv } from "@t3-oss/env-nextjs"
+import { z } from "zod"
 
 export const env = createEnv({
   server: {
@@ -11,6 +11,7 @@ export const env = createEnv({
     GITHUB_CLIENT_SECRET: z.string().min(1),
     EMAIL_SERVER: z.string().min(1),
     SMTP_FROM: z.string().min(1),
+    SENDGRID_API_KEY: z.string().min(1),
     // GITHUB_ACCESS_TOKEN: z.string().min(1),
     DATABASE_URL: z.string().min(1),
     POSTMARK_API_TOKEN: z.string().min(1),
@@ -31,6 +32,7 @@ export const env = createEnv({
     GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
     // GITHUB_ACCESS_TOKEN: process.env.GITHUB_ACCESS_TOKEN,
     DATABASE_URL: process.env.DATABASE_URL,
+    SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
     POSTMARK_API_TOKEN: process.env.POSTMARK_API_TOKEN,
     POSTMARK_SIGN_IN_TEMPLATE: process.env.POSTMARK_SIGN_IN_TEMPLATE,
     POSTMARK_ACTIVATION_TEMPLATE: process.env.POSTMARK_ACTIVATION_TEMPLATE,
@@ -41,4 +43,4 @@ export const env = createEnv({
     // STRIPE_PRO_MONTHLY_PLAN_ID: process.env.STRIPE_PRO_MONTHLY_PLAN_ID,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
   },
-});
+})

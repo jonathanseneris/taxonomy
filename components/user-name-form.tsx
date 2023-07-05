@@ -20,11 +20,12 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
 import { Icons } from "@/components/icons"
 
 interface UserNameFormProps extends React.HTMLAttributes<HTMLFormElement> {
-  user: Pick<User, "id" | "name">
+  user: Pick<User, "id" | "name" | "bio">
 }
 
 type FormData = z.infer<typeof userNameSchema>
@@ -39,6 +40,7 @@ export function UserNameForm({ user, className, ...props }: UserNameFormProps) {
     resolver: zodResolver(userNameSchema),
     defaultValues: {
       name: user?.name || "",
+      bio: user?.bio || "",
     },
   })
   const [isSaving, setIsSaving] = React.useState<boolean>(false)
@@ -53,6 +55,7 @@ export function UserNameForm({ user, className, ...props }: UserNameFormProps) {
       },
       body: JSON.stringify({
         name: data.name,
+        bio: data.bio,
       }),
     })
 
@@ -61,13 +64,13 @@ export function UserNameForm({ user, className, ...props }: UserNameFormProps) {
     if (!response?.ok) {
       return toast({
         title: "Something went wrong.",
-        description: "Your name was not updated. Please try again.",
+        description: "Your settings were not updated. Please try again.",
         variant: "destructive",
       })
     }
 
     toast({
-      description: "Your name has been updated.",
+      description: "Your settings have been updated.",
     })
 
     router.refresh()
@@ -103,6 +106,25 @@ export function UserNameForm({ user, className, ...props }: UserNameFormProps) {
             )}
           </div>
         </CardContent>
+        <CardHeader>
+          <CardTitle>Bio</CardTitle>
+          <CardDescription>
+            Share a little bit about yourself. What should others know about
+            workshopping with you?
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-1">
+            <Label className="sr-only" htmlFor="bio">
+              Bio
+            </Label>
+            <Textarea id="bio" className="w-[400px]" {...register("bio")} />
+            {errors?.bio && (
+              <p className="px-1 text-xs text-red-600">{errors.bio.message}</p>
+            )}
+          </div>
+        </CardContent>
+
         <CardFooter>
           <button
             type="submit"

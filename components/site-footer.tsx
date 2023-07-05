@@ -12,41 +12,41 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
         <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
           <Icons.logo />
           <p className="text-center text-sm leading-loose md:text-left">
-            Built by{" "}
+            Be{" "}
             <a
               href={siteConfig.links.twitter}
               target="_blank"
               rel="noreferrer"
               className="font-medium underline underline-offset-4"
             >
-              senericorp
+              constructive
             </a>
-            . Hosted on{" "}
+            . Be{" "}
             <a
               href="https://vercel.com"
               target="_blank"
               rel="noreferrer"
               className="font-medium underline underline-offset-4"
             >
-              Vercel
+              descriptive
             </a>
-            . Illustrations by{" "}
+            . Be{" "}
             <a
               href="https://popsy.co"
               target="_blank"
               rel="noreferrer"
               className="font-medium underline underline-offset-4"
             >
-              Popsy
+              thoughtful
             </a>
-            . The source code is available on{" "}
+            . Meet your{" "}
             <a
               href={siteConfig.links.github}
               target="_blank"
               rel="noreferrer"
               className="font-medium underline underline-offset-4"
             >
-              GitHub
+              audience
             </a>
             .
           </p>
