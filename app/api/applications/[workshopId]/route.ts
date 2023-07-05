@@ -66,6 +66,28 @@ export async function PATCH(
       data,
     })
 
+    if (status === "Accepted") {
+      console.log("updating", application.userId, {
+        participants: {
+          connect: {
+            id: application.userId,
+          },
+        },
+      })
+      await db.workshop.update({
+        where: {
+          id: workshopId,
+        },
+        data: {
+          participants: {
+            connect: {
+              id: application.userId,
+            },
+          },
+        },
+      })
+    }
+
     return new Response(null, { status: 200 })
   } catch (error) {
     if (error instanceof z.ZodError) {

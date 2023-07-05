@@ -35,6 +35,7 @@ export interface CompleteUser extends z.infer<typeof UserModel> {
   workshops: CompleteWorkshop[]
   Meeting?: CompleteMeeting | null
   SubmissionReview: CompleteSubmissionReview[]
+  Workshop: CompleteWorkshop[]
 }
 
 /**
@@ -51,4 +52,5 @@ export const RelatedUserModel: z.ZodSchema<CompleteUser> = z.lazy(() => UserMode
   workshops: RelatedWorkshopModel.array(),
   Meeting: RelatedMeetingModel.nullish(),
   SubmissionReview: RelatedSubmissionReviewModel.array(),
+  Workshop: RelatedWorkshopModel.array(),
 }))

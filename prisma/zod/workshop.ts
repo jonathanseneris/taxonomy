@@ -38,6 +38,7 @@ export interface CompleteWorkshop extends z.infer<typeof WorkshopModel> {
   submissionSlots: CompleteSubmissionSlot[]
   submissions: CompleteSubmission[]
   SubmissionReview: CompleteSubmissionReview[]
+  participants: CompleteUser[]
   createdBy: CompleteUser
 }
 
@@ -52,5 +53,6 @@ export const RelatedWorkshopModel: z.ZodSchema<CompleteWorkshop> = z.lazy(() => 
   submissionSlots: RelatedSubmissionSlotModel.array(),
   submissions: RelatedSubmissionModel.array(),
   SubmissionReview: RelatedSubmissionReviewModel.array(),
+  participants: RelatedUserModel.array(),
   createdBy: RelatedUserModel,
 }))

@@ -170,10 +170,11 @@ model User {
   applications     Application[]
   submissionSlots  SubmissionSlot[]
   submissions      Submission[]
-  workshops        Workshop[]
+  workshops        Workshop[]         @relation("WorkshopParticipants")
   Meeting          Meeting?           @relation(fields: [meetingId], references: [id])
   meetingId        Int?
   SubmissionReview SubmissionReview[]
+  Workshop         Workshop[]
 
   @@map(name: "users")
 }
@@ -194,6 +195,7 @@ model Workshop {
   submissionSlots  SubmissionSlot[]
   submissions      Submission[]
   SubmissionReview SubmissionReview[]
+  participants     User[]             @relation("WorkshopParticipants")
   userId           String
   createdBy        User               @relation(fields: [userId], references: [id])
   createdAt        DateTime?          @db.Timestamptz(0)

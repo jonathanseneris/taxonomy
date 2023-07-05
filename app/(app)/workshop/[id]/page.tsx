@@ -69,8 +69,8 @@ export default async function EditorPage({ params }: WorkshopPageProps) {
     ? null
     : await getApplication(params.id, user.id)
 
-  const applications = isMyWorkshop ? await getApplications(params.id) : null
-
+  const applications = await getApplications(params.id)
+  console.log("appss", applications)
   const openApplications = applications?.filter((a) => a.status === "Submitted")
   const filled = applications?.filter((a) => a.status === "Accepted")
 

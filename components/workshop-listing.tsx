@@ -6,12 +6,22 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { WorkshopOperations } from "@/components/workshop-operations"
 
 interface PostItemProps {
-  workshop: Pick<Workshop, "id" | "name" | "createdBy" | "createdAt">
+  workshop: Pick<
+    Workshop,
+    "id" | "name" | "createdBy" | "createdAt" | "participants"
+  >
+  user: Pick<User, "id">
 }
 
-export function WorkshopListing({ workshop }: PostItemProps) {
+export function WorkshopListing({ workshop, user }: PostItemProps) {
+  console.log("workshop", workshop)
+  const isParticipant = workshop?.participants?.some((p) => p.id === user.id)
   return (
-    <div className="flex items-center justify-between p-4">
+    <div
+      className={`flex items-center justify-between p-4 ${
+        isParticipant ? "bg-muted" : ""
+      }`}
+    >
       <div className="grid gap-1">
         <Link
           href={`/workshop/${workshop.id}`}

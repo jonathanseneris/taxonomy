@@ -17,7 +17,7 @@ export const metadata = {
   title: "Dashboard",
 }
 
-const getWorkshops = cache(async () => {
+const getWorkshops = cache(async (userId) => {
   console.log(21)
   return await db.workshop.findMany({
     where: {
@@ -30,6 +30,11 @@ const getWorkshops = cache(async () => {
       createdBy: true,
       createdAt: true,
       startDate: true,
+      participants: {
+        select: {
+          id: true,
+        },
+      },
     },
     orderBy: {
       startDate: "desc",
@@ -44,7 +49,7 @@ export default async function DirectoryPage() {
     redirect(authOptions?.pages?.signIn || "/login")
   }
 
-  const workshops = await getWorkshops()
+  const workshops = await getWorkshops(user.id)
   console.log("workshops", workshops)
   return (
     <DashboardShell>
@@ -55,7 +60,11 @@ export default async function DirectoryPage() {
         {workshops?.length ? (
           <div className="divide-y divide-neutral-200 rounded-md border border-slate-200">
             {workshops.map((workshop) => (
-              <WorkshopListing key={workshop.id} workshop={workshop} />
+              <WorkshopListing
+                key={workshop.id}
+                workshop={workshop}
+                user={user}
+              />
             ))}
           </div>
         ) : (

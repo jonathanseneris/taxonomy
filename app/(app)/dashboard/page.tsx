@@ -23,15 +23,20 @@ export const metadata = {
 export const dynamic = "force-dynamic"
 
 const getWorkshopsForUser = cache(async (userId: User["id"]) => {
-  return await db.Workshop.findMany({
+  return await db.user.findFirst({
     where: {
-      userId: userId,
+      id: userId,
     },
     select: {
       id: true,
-      name: true,
-      open: true,
-      createdAt: true,
+      workshops: {
+        select: {
+          id: true,
+          name: true,
+          open: true,
+          createdAt: true,
+        },
+      },
     },
   })
 })
@@ -44,7 +49,7 @@ export default async function DashboardPage() {
     redirect(authOptions?.pages?.signIn || "/login")
   }
   console.log("user", user)
-  const workshops = await getWorkshopsForUser(user?.id)
+  const { workshops } = await getWorkshopsForUser(user?.id)
   console.log("workshops", workshops)
   return (
     <DashboardShell>
