@@ -168,8 +168,8 @@ dependencies:
     specifier: ^10.4.3
     version: 10.4.3
   lucide-react:
-    specifier: ^0.257.0
-    version: 0.257.0(react@18.2.0)
+    specifier: ^0.292.0
+    version: 0.292.0(react@18.2.0)
   next:
     specifier: ^13.4.7
     version: 13.4.7(@babel/core@7.22.5)(@opentelemetry/api@1.4.1)(react-dom@18.2.0)(react@18.2.0)
@@ -6074,8 +6074,8 @@ packages:
     dependencies:
       yallist: 4.0.0
 
-  /lucide-react@0.257.0(react@18.2.0):
-    resolution: {integrity: sha512-iP/RIvOhB8hI+AeocKXBleP9NopM1MgQbwB8hCfNdxYqJrQreJCsEvBtmXb3SS92kxwEGWp6ikJ0XQ6hqaYsdA==}
+  /lucide-react@0.292.0(react@18.2.0):
+    resolution: {integrity: sha512-rRgUkpEHWpa5VCT66YscInCQmQuPCB1RFRzkkxMxg4b+jaL0V12E3riWWR2Sh5OIiUhCwGW/ZExuEO4Az32E6Q==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0
     dependencies:

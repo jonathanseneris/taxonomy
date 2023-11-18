@@ -62,21 +62,20 @@ export async function POST(req: Request) {
     const body = await req.json()
 
     console.log("body", body)
-    const newWorkshop = {
+    const data = {
       ...body,
       userId: session.user.id,
       createdAt: new Date(),
       open: true,
       archived: false,
     }
-    if (!newWorkshop.paid) {
-      newWorkshop.price = null
+    if (!data.paid) {
+      data.price = null
     }
-    console.log("new workshop:", newWorkshop)
-    console.log("isValid?", isValid(newWorkshop.startDate))
-    console.log("isValid?", isValid(newWorkshop.createdAt))
-    const data = WorkshopModel.parse(newWorkshop)
-    console.log("passed data", data)
+    console.log("new workshop:", data)
+    console.log("isValid??", isValid(data.startDate))
+    console.log("isValid??", isValid(data.createdAt))
+
     const workshop = await db.workshop.create({
       data,
       select: {

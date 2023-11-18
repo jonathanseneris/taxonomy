@@ -11,6 +11,7 @@ export const UserModel = z.object({
   stripeCurrentPeriodEnd: z.date().nullish(),
   email: z.string(),
   emailVerified: z.date().nullish(),
+  password: z.string(),
   bio: z.string(),
   name: z.string().nullish(),
   firstName: z.string().nullish(),

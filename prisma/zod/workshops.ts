@@ -1,11 +1,30 @@
-import * as z from "zod"
-import * as imports from "../null"
 import { Decimal } from "decimal.js"
-import { Completeapplications, RelatedapplicationsModel, Completemeetings, RelatedmeetingsModel, Completesubmission_reviews, Relatedsubmission_reviewsModel, Completesubmission_slots, Relatedsubmission_slotsModel, Completesubmissions, RelatedsubmissionsModel, Completeusers_workshops, Relatedusers_workshopsModel, CompleteUser, RelatedUserModel, Completeworkshops_tags, Relatedworkshops_tagsModel, Completeworkshops_users, Relatedworkshops_usersModel } from "./index"
+import * as z from "zod"
+
+import * as imports from "../null"
+import {
+  Completeapplications,
+  Completemeetings,
+  Completesubmission_reviews,
+  Completesubmission_slots,
+  Completesubmissions,
+  CompleteUser,
+  Completeusers_workshops,
+  Completeworkshops_tags,
+  Completeworkshops_users,
+  RelatedapplicationsModel,
+  RelatedmeetingsModel,
+  Relatedsubmission_reviewsModel,
+  Relatedsubmission_slotsModel,
+  RelatedsubmissionsModel,
+  RelatedUserModel,
+  Relatedusers_workshopsModel,
+  Relatedworkshops_tagsModel,
+  Relatedworkshops_usersModel,
+} from "./index"
 
 // Helper schema for Decimal fields
-z
-  .instanceof(Decimal)
+z.instanceof(Decimal)
   .or(z.string())
   .or(z.number())
   .refine((value) => {
@@ -49,14 +68,17 @@ export interface Completeworkshops extends z.infer<typeof workshopsModel> {
  *
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
-export const RelatedworkshopsModel: z.ZodSchema<Completeworkshops> = z.lazy(() => workshopsModel.extend({
-  applications: RelatedapplicationsModel.array(),
-  meetings: RelatedmeetingsModel.array(),
-  submission_reviews: Relatedsubmission_reviewsModel.array(),
-  submission_slots: Relatedsubmission_slotsModel.array(),
-  submissions: RelatedsubmissionsModel.array(),
-  users_workshops: Relatedusers_workshopsModel.array(),
-  users: RelatedUserModel,
-  workshops_tags: Relatedworkshops_tagsModel.array(),
-  workshops_users: Relatedworkshops_usersModel.array(),
-}))
+export const RelatedworkshopsModel: z.ZodSchema<Completeworkshops> = z.lazy(
+  () =>
+    workshopsModel.extend({
+      applications: RelatedapplicationsModel.array(),
+      meetings: RelatedmeetingsModel.array(),
+      submission_reviews: Relatedsubmission_reviewsModel.array(),
+      submission_slots: Relatedsubmission_slotsModel.array(),
+      submissions: RelatedsubmissionsModel.array(),
+      users_workshops: Relatedusers_workshopsModel.array(),
+      users: RelatedUserModel,
+      workshops_tags: Relatedworkshops_tagsModel.array(),
+      workshops_users: Relatedworkshops_usersModel.array(),
+    })
+)

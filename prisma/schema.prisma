@@ -154,6 +154,7 @@ model User {
 
   email            String             @unique(map: "user_email_unique") @db.VarChar(255)
   emailVerified    DateTime?          @db.Timestamptz(0)
+  password         String
   bio              String             @default("")
   name             String?            @default("")
   firstName        String?            @default("")
