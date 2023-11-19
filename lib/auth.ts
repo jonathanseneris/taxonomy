@@ -14,6 +14,16 @@ import { sendVerificationEmail } from "@/lib/mail"
 
 // const postmarkClient = new Client(env.POSTMARK_API_TOKEN)
 
+// #Xcm5gB!EhN37x3e
+// 8jQbDtj5bMyj
+// S8M@&!8RYXd82xsN
+// nhoGLs1zr5oImy6
+// #Xcm5gB!EhN37x3e
+// 8jQbDtj5bMyj
+// S8M@&!8RYXd82xsN
+// nhoGLs1zr5oImy6
+// nhoGLs1zr5oImy6
+
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db as any),
   session: {
@@ -23,10 +33,6 @@ export const authOptions: NextAuthOptions = {
     signIn: "/login",
   },
   providers: [
-    GitHubProvider({
-      clientId: env.GITHUB_CLIENT_ID,
-      clientSecret: env.GITHUB_CLIENT_SECRET,
-    }),
     EmailProvider({
       server: env.EMAIL_SERVER,
       from: env.SMTP_FROM,
@@ -73,12 +79,24 @@ export const authOptions: NextAuthOptions = {
       }
       return session
     },
+    // async signIn({ user, account, email }) {
+    //   const userExists = await db.user.findUnique({
+    //     email: user?.email, //the user object has an email property, which contains the email the user entered.
+    //   })
+    //   if (userExists) {
+    //     return true //if the email exists in the User collection, email them a magic login link
+    //   } else {
+    //     return "/register"
+    //   }
+    // },
     async jwt({ token, user }) {
-      const dbUser = await db.user.findFirst({
-        where: {
-          email: token?.email ? token.email : "",
-        },
-      })
+      const dbUser = token?.email
+        ? await db.user.findUnique({
+            where: {
+              email: token.email,
+            },
+          })
+        : null
       if (!dbUser) {
         if (user) {
           token.id = user?.id

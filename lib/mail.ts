@@ -8,6 +8,7 @@ interface SendgridResponse {
   error?: string
 }
 export function sendVerificationEmail({ to, url }): Promise<SendgridResponse> {
+  console.log("sendVerificationEmail", to, url)
   return new Promise((resolve, reject) => {
     const msg = {
       from: "hi@madge.io", // Change to your verified sender

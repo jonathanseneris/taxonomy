@@ -48,7 +48,6 @@ model Account {
   user              User     @relation(fields: [userId], references: [id])
 
   @@unique([provider, providerAccountId])
-  @@map(name: "accounts")
 }
 
 model Application {
@@ -89,8 +88,6 @@ model Session {
   userId       String
   expires      DateTime
   User         User     @relation(fields: [userId], references: [id])
-
-  @@map(name: "sessions")
 }
 
 model SubmissionReview {
@@ -154,7 +151,6 @@ model User {
 
   email            String             @unique(map: "user_email_unique") @db.VarChar(255)
   emailVerified    DateTime?          @db.Timestamptz(0)
-  password         String
   bio              String             @default("")
   name             String?            @default("")
   firstName        String?            @default("")
@@ -176,8 +172,6 @@ model User {
   meetingId        Int?
   SubmissionReview SubmissionReview[]
   Workshop         Workshop[]
-
-  @@map(name: "users")
 }
 
 model Workshop {
@@ -208,5 +202,4 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
-  @@map(name: "verification_tokens")
 }

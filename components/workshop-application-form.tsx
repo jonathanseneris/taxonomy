@@ -95,7 +95,7 @@ export function WorkshopApplicationForm({
       })
 
       console.log(response)
-      router.push(`/workshop/${response.data?.id}`)
+      router.push(`/workshop/${workshop.id}/application/${response.data?.id}`)
     } catch (error) {
       console.error(error)
       setIsSaving(false)
