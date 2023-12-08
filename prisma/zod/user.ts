@@ -1,6 +1,6 @@
 import * as z from "zod"
 import * as imports from "../null"
-import { CompleteSession, RelatedSessionModel, CompleteAccount, RelatedAccountModel, CompleteApplication, RelatedApplicationModel, CompleteSubmissionSlot, RelatedSubmissionSlotModel, CompleteSubmission, RelatedSubmissionModel, CompleteWorkshop, RelatedWorkshopModel, CompleteMeeting, RelatedMeetingModel, CompleteSubmissionReview, RelatedSubmissionReviewModel } from "./index"
+import { CompleteSession, RelatedSessionModel, CompleteAccount, RelatedAccountModel, CompleteApplication, RelatedApplicationModel, CompleteSubmissionSlot, RelatedSubmissionSlotModel, CompleteSubmission, RelatedSubmissionModel, CompleteWorkshop, RelatedWorkshopModel, CompleteMeeting, RelatedMeetingModel, CompleteSubmissionReview, RelatedSubmissionReviewModel, CompleteDocument, RelatedDocumentModel, CompleteDocumentVersion, RelatedDocumentVersionModel } from "./index"
 
 export const UserModel = z.object({
   id: z.string(),
@@ -36,6 +36,8 @@ export interface CompleteUser extends z.infer<typeof UserModel> {
   Meeting?: CompleteMeeting | null
   SubmissionReview: CompleteSubmissionReview[]
   Workshop: CompleteWorkshop[]
+  Document: CompleteDocument[]
+  DocumentVersion: CompleteDocumentVersion[]
 }
 
 /**
@@ -53,4 +55,6 @@ export const RelatedUserModel: z.ZodSchema<CompleteUser> = z.lazy(() => UserMode
   Meeting: RelatedMeetingModel.nullish(),
   SubmissionReview: RelatedSubmissionReviewModel.array(),
   Workshop: RelatedWorkshopModel.array(),
+  Document: RelatedDocumentModel.array(),
+  DocumentVersion: RelatedDocumentVersionModel.array(),
 }))

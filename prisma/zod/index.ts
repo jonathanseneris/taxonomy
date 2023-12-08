@@ -1,5 +1,7 @@
 export * from "./account"
 export * from "./application"
+export * from "./document"
+export * from "./documentversion"
 export * from "./emailsent"
 export * from "./meeting"
 export * from "./session"

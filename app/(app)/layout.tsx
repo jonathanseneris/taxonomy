@@ -1,4 +1,4 @@
-import { notFound, redirect } from "next/navigation"
+import { notFound, redirect, usePathname, useRouter } from "next/navigation"
 
 import { dashboardConfig } from "@/config/dashboard"
 import { authOptions } from "@/lib/auth"

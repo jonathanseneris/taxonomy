@@ -65,6 +65,29 @@ model Application {
   workshopId      String    @db.VarChar(255)
 }
 
+model Document {
+  id              String            @id @default(cuid())
+  title           String            @default("")
+  category        String            @default("")
+  user            User              @relation(fields: [userId], references: [id])
+  userId          String
+  DocumentVersion DocumentVersion[]
+}
+
+model DocumentVersion {
+  id              String    @id @default(cuid())
+  submittedOn     DateTime? @db.Timestamptz(0)
+  viewedOn        DateTime? @db.Timestamptz(0)
+  statusChangedOn DateTime? @db.Timestamptz(0)
+  body            String    @default("")
+  document        Document  @relation(fields: [documentId], references: [id])
+  documentId      String    @db.VarChar(255)
+  User            User?     @relation(fields: [userId], references: [id])
+  userId          String?
+  Workshop        Workshop? @relation(fields: [workshopId], references: [id])
+  workshopId      String?
+}
+
 model EmailSent {
   id        Int      @id @default(autoincrement())
   to        String   @db.VarChar(255)
@@ -172,6 +195,8 @@ model User {
   meetingId        Int?
   SubmissionReview SubmissionReview[]
   Workshop         Workshop[]
+  Document         Document[]
+  DocumentVersion  DocumentVersion[]
 }
 
 model Workshop {
@@ -194,6 +219,7 @@ model Workshop {
   userId           String
   createdBy        User               @relation(fields: [userId], references: [id])
   createdAt        DateTime?          @db.Timestamptz(0)
+  DocumentVersion  DocumentVersion[]
 }
 
 model VerificationToken {

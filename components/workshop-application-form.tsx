@@ -26,6 +26,7 @@ import { Label } from "@/components/ui/label"
 import { SelectInput } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
+import { ApplicationSubmitButton } from "@/components/application-submit-button"
 import { Icons } from "@/components/icons"
 
 interface WorkshopApplicationFormProps extends ButtonProps {
@@ -64,6 +65,8 @@ export function WorkshopApplicationForm({
     )
   }
 
+  console.log("application", application)
+
   async function onSubmit(data: FormData) {
     try {
       //
@@ -71,6 +74,35 @@ export function WorkshopApplicationForm({
       console.log(58)
       setIsSaving(true)
       console.log("ok")
+
+      if (application?.id) {
+        const response = await axios.patch(`/api/applications/${workshop.id}`, {
+          id: application.id,
+          statement: data.statement,
+          about: data.about,
+          sample: data.sample,
+          workshopId: workshop.id,
+        })
+        console.log("response", response)
+        // console.log("response.data", response?.data);
+        setIsSaving(false)
+
+        if (response?.statusText !== "OK") {
+          return toast({
+            title: "Something went wrong.",
+            description: "Your application was not saved. Please try again.",
+            variant: "destructive",
+          })
+        }
+
+        toast({
+          description: "Application updated.",
+        })
+
+        console.log(response)
+        return
+      }
+
       const response = await axios.post(`/api/applications`, {
         statement: data.statement,
         about: data.about,
@@ -101,6 +133,12 @@ export function WorkshopApplicationForm({
       setIsSaving(false)
     }
   }
+
+  const canSubmit =
+    application?.status === "Draft" &&
+    application?.about &&
+    application?.statement &&
+    application?.sample
 
   return (
     <form
@@ -178,8 +216,20 @@ export function WorkshopApplicationForm({
               {isSaving && (
                 <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
               )}
-              <span>Save</span>
+              <span>
+                {!application?.status || application?.status === "Draft"
+                  ? "Save as Draft"
+                  : "Update"}
+              </span>
             </button>
+            {canSubmit && (
+              <div className="w-50">
+                <ApplicationSubmitButton
+                  application={application}
+                  workshop={workshop}
+                />
+              </div>
+            )}
           </div>
         </CardFooter>
       </Card>

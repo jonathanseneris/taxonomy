@@ -77,7 +77,7 @@ export default async function EditorPage({ params }: WorkshopPageProps) {
   const applicationStatus = application?.status
 
   const didStart = isAfter(new Date(), new Date(workshop.startDate))
-
+  console.log("workshop", workshop)
   return (
     <DashboardShell>
       <DashboardHeader

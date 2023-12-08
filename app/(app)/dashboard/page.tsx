@@ -23,45 +23,48 @@ export const metadata = {
 export const dynamic = "force-dynamic"
 
 const getWorkshopsForUser = cache(async (userId: User["id"]) => {
-  return await db.user.findFirst({
+  const user = await db.user.findFirst({
     where: {
       id: userId,
     },
-    select: {
-      id: true,
-      workshops: {
-        select: {
-          id: true,
-          name: true,
-          open: true,
-          createdAt: true,
-        },
-      },
+    include: {
+      Workshop: true,
+      workshops: true,
     },
   })
+  console.log("user", user)
+  return { participating: user?.workshops || [], leading: user?.Workshop || [] }
 })
 
 export default async function DashboardPage() {
-  console.log("go")
+  console.log("go--")
   const user = await getCurrentUser()
   console.log("user", user)
   if (!user) {
     redirect(authOptions?.pages?.signIn || "/login")
   }
   console.log("user", user)
-  const { workshops } = await getWorkshopsForUser(user?.id)
-  console.log("workshops", workshops)
+  const { participating, leading } = await getWorkshopsForUser(user?.id)
+  console.log("workshops", participating, leading)
+  const hasWorkshops = participating?.length || leading?.length
   return (
     <DashboardShell>
       <DashboardHeader heading="Dashboard" text="Your workshops at a glance.">
         <WorkshopCreateButton />
       </DashboardHeader>
       <div>
-        {workshops?.length ? (
-          <div className="divide-y divide-neutral-200 rounded-md border border-slate-200">
-            {workshops.map((workshop) => (
-              <WorkshopListing key={workshop.id} workshop={workshop} />
-            ))}
+        {hasWorkshops ? (
+          <div>
+            <div className="divide-y divide-neutral-200 rounded-md border border-slate-200">
+              {leading.map((workshop) => (
+                <WorkshopListing key={workshop.id} workshop={workshop} />
+              ))}
+            </div>
+            <div className="divide-y divide-neutral-200 rounded-md border border-slate-200">
+              {participating.map((workshop) => (
+                <WorkshopListing key={workshop.id} workshop={workshop} />
+              ))}
+            </div>
           </div>
         ) : (
           <EmptyPlaceholder>

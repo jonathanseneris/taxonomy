@@ -30,7 +30,7 @@ import {
   ThumbsDown,
   ThumbsUp,
   ThumbsUpIcon,
-  Trash,
+  Trash,Briefcase,
   Twitter,
   User,
   Waves,
@@ -68,6 +68,7 @@ export const Icons = {
   sun: SunMedium,
   moon: Moon,
   laptop: Laptop,
+  work: Briefcase,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"

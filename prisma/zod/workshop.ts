@@ -1,7 +1,7 @@
 import * as z from "zod"
 import * as imports from "../null"
 import { Decimal } from "decimal.js"
-import { CompleteApplication, RelatedApplicationModel, CompleteMeeting, RelatedMeetingModel, CompleteSubmissionSlot, RelatedSubmissionSlotModel, CompleteSubmission, RelatedSubmissionModel, CompleteSubmissionReview, RelatedSubmissionReviewModel, CompleteUser, RelatedUserModel } from "./index"
+import { CompleteApplication, RelatedApplicationModel, CompleteMeeting, RelatedMeetingModel, CompleteSubmissionSlot, RelatedSubmissionSlotModel, CompleteSubmission, RelatedSubmissionModel, CompleteSubmissionReview, RelatedSubmissionReviewModel, CompleteUser, RelatedUserModel, CompleteDocumentVersion, RelatedDocumentVersionModel } from "./index"
 
 // Helper schema for Decimal fields
 z
@@ -40,6 +40,7 @@ export interface CompleteWorkshop extends z.infer<typeof WorkshopModel> {
   SubmissionReview: CompleteSubmissionReview[]
   participants: CompleteUser[]
   createdBy: CompleteUser
+  DocumentVersion: CompleteDocumentVersion[]
 }
 
 /**
@@ -55,4 +56,5 @@ export const RelatedWorkshopModel: z.ZodSchema<CompleteWorkshop> = z.lazy(() => 
   SubmissionReview: RelatedSubmissionReviewModel.array(),
   participants: RelatedUserModel.array(),
   createdBy: RelatedUserModel,
+  DocumentVersion: RelatedDocumentVersionModel.array(),
 }))

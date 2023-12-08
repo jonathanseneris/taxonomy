@@ -38,6 +38,7 @@ export function ApplicationsTabs({
   variant,
   ...props
 }: ApplicationsTabsProps) {
+  console.log("openApplications", openApplications)
   return (
     <Tabs defaultValue={openApplications[0]?.id} className="w-full">
       <TabsList className="grid w-full grid-cols-2">

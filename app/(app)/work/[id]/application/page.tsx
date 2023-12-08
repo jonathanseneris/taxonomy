@@ -137,14 +137,14 @@ export default async function WorkshopApplicationPage({ params }) {
   return (
     <DashboardShell>
       <DashboardHeader heading="Workshop Application" text={workshop.name} />
-      {canSubmit && (
-        <div className="w-50">
-          <ApplicationSubmitButton
-            application={application}
-            workshop={workshop}
-          />
-        </div>
-      )}
+      {/*{canSubmit && (*/}
+      {/*  <div className="w-50">*/}
+      {/*    <ApplicationSubmitButton*/}
+      {/*      application={application}*/}
+      {/*      workshop={workshop}*/}
+      {/*    />*/}
+      {/*  </div>*/}
+      {/*)}*/}
       <div className="grid gap-10">
         <WorkshopApplicationForm
           workshop={workshop}
