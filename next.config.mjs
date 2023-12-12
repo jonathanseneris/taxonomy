@@ -9,8 +9,15 @@ const nextConfig = {
     domains: ["avatars.githubusercontent.com"],
   },
   experimental: {
-    appDir: true,
-    serverComponentsExternalPackages: ["prisma", "@prisma/client"],
+    serverComponentsExternalPackages: [
+      "@mikro-orm/postgresql",
+      "@mikro-orm/core",
+      "@mikro-orm/cli",
+      "@mikro-orm/entity-generator",
+      "@mikro-orm/migrations",
+      "@mikro-orm/reflection",
+      "@mikro-orm/seeder",
+    ],
   },
 }
 

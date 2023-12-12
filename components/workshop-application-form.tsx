@@ -2,8 +2,8 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
+import { Application, User, Workshop } from "@/entities"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { User, Workshop } from "@prisma/client"
 import axios from "axios"
 import { useForm } from "react-hook-form"
 import { Stripe } from "stripe"

@@ -1,3 +1,4 @@
+import { Application } from "@/entities"
 import { WorkshopModel } from "@/prisma/zod/workshop"
 import { isValid } from "date-fns"
 import { getServerSession } from "next-auth/next"
@@ -24,11 +25,11 @@ export async function POST(req: Request) {
       throw new Error("Missing required field(s)")
     }
 
-    const existingApplication = await db.application.findFirst({
-      where: {
-        workshopId,
-        userId: session?.user?.id,
-      },
+    const em = await getEM()
+
+    const existingApplication = await em.findOne(Application, {
+      workshopId,
+      userId: session?.user?.id,
     })
 
     if (existingApplication) {
@@ -39,14 +40,10 @@ export async function POST(req: Request) {
 
     const data = {
       workshop: {
-        connect: {
-          id: workshopId,
-        },
+        id: workshopId,
       },
       user: {
-        connect: {
-          id: session.user.id,
-        },
+        id: session.user.id,
       },
       statement,
       about,
@@ -59,10 +56,12 @@ export async function POST(req: Request) {
 
     console.log(data)
 
-    const application = await db.application.create({
+    const application = await em.create(Application, {
       data,
       select: { id: true },
     })
+
+    await em.persistAndFlush(application)
 
     // const newWorkshop = {
     //   ...body,

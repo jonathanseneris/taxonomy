@@ -1,3 +1,18 @@
+import {
+  Account,
+  Application,
+  Meeting,
+  Session,
+  Submission,
+  SubmissionReview,
+  SubmissionSlot,
+  Tag,
+  User,
+  VerificationToken,
+  Workshop,
+} from "@/entities"
+import getEM from "@/orm/getEM"
+import { MikroOrmAdapter } from "@auth/mikro-orm-adapter"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 // import sgMail from "@sendgrid/mail"
 // import mail from "@sendgrid/mail"
@@ -25,7 +40,29 @@ import { sendVerificationEmail } from "@/lib/mail"
 // nhoGLs1zr5oImy6
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(db as any),
+  adapter: MikroOrmAdapter(
+    {
+      // MikroORM options object. Ref: https://mikro-orm.io/docs/next/configuration#driver
+      dbName: process.env.DB_NAME,
+      type: "postgresql",
+      debug: process.env.DEBUG === "true" || process.env.DEBUG?.includes("db"),
+    },
+    {
+      entities: [
+        Account,
+        Application,
+        Meeting,
+        Workshop,
+        Session,
+        SubmissionReview,
+        SubmissionSlot,
+        Submission,
+        Tag,
+        User,
+        VerificationToken,
+      ],
+    }
+  ),
   session: {
     strategy: "jwt",
   },
@@ -90,11 +127,10 @@ export const authOptions: NextAuthOptions = {
     //   }
     // },
     async jwt({ token, user }) {
+      const em = await getEM()
       const dbUser = token?.email
-        ? await db.user.findUnique({
-            where: {
-              email: token.email,
-            },
+        ? await em.findOne("User", {
+            email: token.email,
           })
         : null
       if (!dbUser) {

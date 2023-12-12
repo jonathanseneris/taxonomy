@@ -2,7 +2,8 @@ import * as React from "react"
 import { cache } from "react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import { User } from "@prisma/client"
+import { User } from "@/entities"
+import getEM from "@/orm/getEM"
 
 import { authOptions } from "@/lib/auth"
 import { db } from "@/lib/db"
@@ -23,15 +24,11 @@ export const metadata = {
 export const dynamic = "force-dynamic"
 
 const getWorkshopsForUser = cache(async (userId: User["id"]) => {
-  const user = await db.user.findFirst({
-    where: {
-      id: userId,
-    },
-    include: {
-      Workshop: true,
-      workshops: true,
-    },
+  const em = await getEM()
+  const user = await em.findOne(User, userId, {
+    include: ["workshops"],
   })
+
   console.log("user", user)
   return { participating: user?.workshops || [], leading: user?.Workshop || [] }
 })

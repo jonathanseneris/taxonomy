@@ -1,6 +1,6 @@
 import { cache } from "react"
 import { redirect } from "next/navigation"
-import { User } from "@prisma/client"
+import getEM from "@/orm/getEM"
 
 import { authOptions } from "@/lib/auth"
 import { db } from "@/lib/db"
@@ -19,6 +19,12 @@ export const metadata = {
 
 const getWorkshops = cache(async (userId) => {
   console.log(21)
+  const em = await getEM()
+  return await em.find(
+    "Workshop",
+    { open: true },
+    { include: ["participants"] }
+  )
   return await db.workshop.findMany({
     where: {
       open: true,

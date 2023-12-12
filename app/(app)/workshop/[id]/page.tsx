@@ -1,10 +1,12 @@
 import * as React from "react"
 import Link from "next/link"
 import { notFound, redirect } from "next/navigation"
-import { Application, User, Workshop } from "@/entities"
+import getEM from "@/orm/getEM"
+import withORM from "@/orm/withORM"
 import { format, isAfter } from "date-fns"
 
 import { authOptions } from "@/lib/auth"
+import { db } from "@/lib/db"
 import { getCurrentUser } from "@/lib/session"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
@@ -15,28 +17,33 @@ import { DashboardShell } from "@/components/shell"
 
 async function getWorkshop(workshopId: Workshop["id"], userId: User["id"]) {
   const em = await getEM()
-  return await em.find(
-    Workshop,
-    {
-      id: workshopId, // authorId: userId,
-    },
+  return await em.findOne(
+    "Workshop",
+    workshopId,
+    { id: workshopId },
     { include: ["createdBy"] }
   )
 }
 
 async function getApplication(workshopId: Workshop["id"], userId: User["id"]) {
-  const em = await getEM()
-  return await em.find(Application, {
-    workshopId,
-    userId,
+  return await db.application.findFirst({
+    where: {
+      workshopId,
+      userId,
+    },
   })
 }
 
 async function getApplications(workshopId: Workshop["id"]) {
-  const em = await getEM()
-  return await em.find(Application, {
-    workshopId,
-    status: { not: "Draft" },
+  return await db.application.findMany({
+    where: {
+      workshopId,
+      status: { not: "Draft" },
+    },
+    select: {
+      id: true,
+      status: true,
+    },
   })
 }
 
@@ -44,7 +51,7 @@ interface WorkshopPageProps {
   params: { id: string }
 }
 
-export default async function EditorPage({ params }: WorkshopPageProps) {
+async function WorkshopPage({ params }: WorkshopPageProps) {
   const user = await getCurrentUser()
 
   if (!user) {
@@ -181,3 +188,5 @@ export default async function EditorPage({ params }: WorkshopPageProps) {
     </DashboardShell>
   )
 }
+
+export default withORM(WorkshopPage)
