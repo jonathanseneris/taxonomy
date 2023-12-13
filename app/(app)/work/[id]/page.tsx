@@ -20,7 +20,7 @@ async function getWorkshop(workshopId: Workshop["id"], userId: User["id"]) {
     {
       id: workshopId, // authorId: userId,
     },
-    { include: ["createdBy"] }
+    { populate: ["createdBy"] }
   )
 }
 

@@ -1,9 +1,8 @@
-import { Application } from "@prisma/client"
+import { Application, Workshop } from "@/entities"
+import getEM from "@/orm/getEM"
 import { getServerSession } from "next-auth/next"
-import { z } from "zod"
 
 import { authOptions } from "@/lib/auth"
-import { db } from "@/lib/db"
 
 const routeContextSchema = z.object({
   params: z.object({
@@ -32,14 +31,9 @@ export async function PATCH(
     const body = await req.json()
     console.log("body", body)
     const { status, applicationId } = body
-
-    const application = await db.application.findFirstOrThrow({
-      where: {
-        id: applicationId,
-      },
-      include: {
-        workshop: true,
-      },
+    const em = await getEM()
+    const application = await em.findOneOrFail(Application, applicationId, {
+      populate: ["workshop"],
     })
 
     if (
@@ -56,53 +50,33 @@ export async function PATCH(
     const data: Partial<Application> = {}
 
     if (application.userId === session.user.id) {
-      data.statement = body.statement
-      data.about = body.about
-      data.sample = body.sample
+      application.statement = body.statement
+      application.about = body.about
+      application.sample = body.sample
       if (application.status === "Draft") {
-        data.status = body.status
-        data.statusChangedOn = new Date()
+        application.status = body.status
+        application.statusChangedOn = new Date()
         if (body.status === "Submitted") {
-          data.submittedOn = new Date()
+          application.submittedOn = new Date()
         }
       }
     }
 
     if (application.workshop.userId === session.user.id) {
-      data.status = body.status
-      data.statusChangedOn = new Date()
+      application.status = body.status
+      application.statusChangedOn = new Date()
     }
-    console.log("updating", applicationId, data)
-    await db.application.update({
-      where: {
-        id: applicationId,
-      },
-      data,
-    })
 
-    if (application.workshop.userId === session.user.id) {
-      if (status === "Accepted") {
-        console.log("updating", application.userId, {
-          participants: {
-            connect: {
-              id: application.userId,
-            },
-          },
-        })
-        await db.workshop.update({
-          where: {
-            id: workshopId,
-          },
-          data: {
-            participants: {
-              connect: {
-                id: application.userId,
-              },
-            },
-          },
-        })
-      }
+    await em.flush()
+
+    if (
+      application.workshop?.userId === session.user.id &&
+      status === "Accepted"
+    ) {
+      const workshop = await em.findOneOrFail(Workshop, workshopId)
+      workshop.participants.add(application.userId)
     }
+    await em.flush()
 
     return new Response(null, { status: 200 })
   } catch (error) {

@@ -1,24 +1,16 @@
-import { Entity, ManyToOne, PrimaryKey, Property } from "@mikro-orm/core"
-
-import { Submission } from "./Submission"
-import { User } from "./User"
-import { Workshop } from "./Workshop"
+import { Submission, User, Workshop } from "@/entities"
+import { BaseEntity } from "@/modules/common/base.entity"
+import { Entity, ManyToOne, Property, Rel } from "@mikro-orm/core"
 
 @Entity()
-export class SubmissionSlot {
-  @PrimaryKey() id!: number
-
-  @ManyToOne(() => Workshop) workshop!: Workshop
+export class SubmissionSlot extends BaseEntity {
+  @ManyToOne(() => Workshop) workshop!: Rel<Workshop>
 
   @Property() dueDate!: Date
 
   @Property() workshopDate!: Date
 
-  @Property() createdAt!: Date
+  @ManyToOne(() => Submission) submission!: Rel<Submission>
 
-  @Property() lastModifiedAt!: Date
-
-  @ManyToOne(() => Submission) submission?: Submission
-
-  @ManyToOne(() => User) user?: User
+  @ManyToOne(() => User) user!: Rel<User>
 }

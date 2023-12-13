@@ -1,23 +1,17 @@
 // @ts-nocheck
 // TODO: Fix this when we turn strict mode on.
+import { User } from "@/entities"
+import getEM from "@/orm/getEM"
+
 import { UserSubscriptionPlan } from "types"
 import { freePlan, proPlan } from "@/config/subscriptions"
-import { db } from "@/lib/db"
 
 export async function getUserSubscriptionPlan(
   userId: string
 ): Promise<UserSubscriptionPlan> {
-  const user = await db.user.findFirst({
-    where: {
-      id: userId,
-    },
-    select: {
-      stripeSubscriptionId: true,
-      stripeCurrentPeriodEnd: true,
-      stripeCustomerId: true,
-      stripePriceId: true,
-    },
-  })
+  const em = await getEM()
+  console.log("userId", userId)
+  const user = await em.findOne(User, userId)
 
   if (!user) {
     throw new Error("User not found")
@@ -32,7 +26,7 @@ export async function getUserSubscriptionPlan(
 
   return {
     ...plan,
-    ...user,
+    // ...user,
     stripeCurrentPeriodEnd: user.stripeCurrentPeriodEnd?.getTime(),
     isPro,
   }

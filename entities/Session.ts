@@ -1,19 +1,16 @@
-import {
-  Entity,
-  ManyToOne,
-  PrimaryKey,
-  Property,
-  Unique,
-} from "@mikro-orm/core"
-import { v4 } from "uuid"
+import { User } from "@/entities"
+import { BaseEntity } from "@/modules/common/base.entity"
+import { Entity, ManyToOne, Property, Rel, Unique } from "@mikro-orm/core"
 
 @Entity()
-export class Session {
-  @PrimaryKey() id: string = v4()
+export class Session extends BaseEntity {
+  @Unique()
+  @Property()
+  sessionToken!: string
 
-  @Unique() @Property() sessionToken!: string
+  @ManyToOne(() => User)
+  user!: Rel<User>
 
-  @ManyToOne(() => "User") user!: "User"
-
-  @Property() expires!: Date
+  @Property()
+  expires!: Date
 }

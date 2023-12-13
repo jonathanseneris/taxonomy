@@ -1,18 +1,17 @@
+import { Application, Meeting, Submission, User } from "@/entities"
+import { BaseEntity } from "@/modules/common/base.entity"
 import {
   Collection,
   Entity,
   ManyToMany,
   ManyToOne,
-  PrimaryKey,
+  OneToMany,
   Property,
+  Rel,
 } from "@mikro-orm/core"
-import { v4 } from "uuid"
 
 @Entity()
-export class Workshop {
-  @PrimaryKey()
-  id: string = v4()
-
+export class Workshop extends BaseEntity {
   @Property()
   targetSize!: number
 
@@ -31,9 +30,6 @@ export class Workshop {
   @Property()
   name!: string
 
-  @ManyToMany(() => "User")
-  participants = new Collection<"User">(this)
-
   @Property({ columnType: "text" })
   description: string = ""
 
@@ -43,9 +39,18 @@ export class Workshop {
   @Property()
   archived: boolean = false
 
-  @ManyToOne(() => "User")
-  createdBy!: "User"
+  @ManyToOne(() => User)
+  createdBy!: Rel<User>
 
-  @Property({ defaultRaw: `CURRENT_TIMESTAMP` })
-  createdAt!: Date
+  @OneToMany(() => Meeting, (meeting) => meeting.workshop)
+  meetings = new Collection<Meeting>(this)
+
+  @OneToMany(() => Application, (application) => application.workshop)
+  applications = new Collection<Application>(this)
+
+  @OneToMany(() => Submission, (submission) => submission.workshop)
+  submissions = new Collection<Submission>(this)
+
+  @ManyToMany(() => User, "workshops", { owner: true })
+  participants = new Collection<User>(this)
 }

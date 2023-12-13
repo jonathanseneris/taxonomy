@@ -1,13 +1,10 @@
-import { Entity, ManyToOne, PrimaryKey, Property } from "@mikro-orm/core"
-import { v4 } from "uuid"
-
-import { Workshop } from "./Workshop"
+import { Workshop } from "@/entities"
+import { BaseEntity } from "@/modules/common/base.entity"
+import { Entity, ManyToOne, Property, Rel } from "@mikro-orm/core"
 
 @Entity()
-export class Meeting {
-  @PrimaryKey() id: string = v4()
-
+export class Meeting extends BaseEntity {
   @Property() startTime!: Date
 
-  @ManyToOne(() => Workshop) workshop!: Workshop
+  @ManyToOne(() => Workshop) workshop!: Rel<Workshop>
 }

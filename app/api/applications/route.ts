@@ -1,11 +1,8 @@
 import { Application } from "@/entities"
-import { WorkshopModel } from "@/prisma/zod/workshop"
-import { isValid } from "date-fns"
 import { getServerSession } from "next-auth/next"
 import * as z from "zod"
 
 import { authOptions } from "@/lib/auth"
-import { db } from "@/lib/db"
 import { RequiresProPlanError } from "@/lib/exceptions"
 
 export async function POST(req: Request) {

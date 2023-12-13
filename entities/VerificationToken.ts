@@ -1,13 +1,10 @@
-import { Entity, PrimaryKey, Property, Unique } from "@mikro-orm/core"
+import { Entity, PrimaryKey, Property } from "@mikro-orm/core"
 
 @Entity()
 export class VerificationToken {
-  @PrimaryKey()
-  token!: string
+  @PrimaryKey() token!: string
 
-  @Property()
-  identifier!: string
+  @Property() identifier!: string
 
-  @Property()
-  expires!: Date
+  @Property() expires!: Date
 }

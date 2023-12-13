@@ -14,7 +14,7 @@ const withORM =
   (handler: NextApiHandler) =>
   async (req: NextApiRequest, res: NextApiResponse) => {
     const orm = await getORM()
-    return RequestContext.createAsync(orm.em, async () => handler(req, res))
+    return RequestContext.create(orm.em, async () => handler(req, res))
   }
 
 export default withORM

@@ -1,14 +1,11 @@
-import { Entity, PrimaryKey, Property } from "@mikro-orm/core"
+import { BaseEntity } from "@/modules/common/base.entity"
+import { Entity, Property } from "@mikro-orm/core"
 
 @Entity()
-export class EmailSent {
-  @PrimaryKey() id!: number
-
+export class EmailSent extends BaseEntity {
   @Property() to!: string
 
   @Property() subject!: string
 
   @Property({ columnType: "text", default: "" }) html!: string
-
-  @Property({ defaultRaw: `CURRENT_TIMESTAMP` }) createdAt!: Date
 }

@@ -1,8 +1,10 @@
+import { User } from "@/entities"
+import getEM from "@/orm/getEM"
+import withORM from "@/orm/withORM"
 import { getServerSession } from "next-auth/next"
 import { z } from "zod"
 
 import { authOptions } from "@/lib/auth"
-import { db } from "@/lib/db"
 import { userNameSchema } from "@/lib/validations/user"
 
 const routeContextSchema = z.object({
@@ -11,10 +13,10 @@ const routeContextSchema = z.object({
   }),
 })
 
-export async function PATCH(
+const patchRoute = async (
   req: Request,
   context: z.infer<typeof routeContextSchema>
-) {
+) => {
   try {
     // Validate the route context.
     const { params } = routeContextSchema.parse(context)
@@ -27,18 +29,17 @@ export async function PATCH(
 
     // Get the request body and validate it.
     const body = await req.json()
+    console.log("body", body)
     const payload = userNameSchema.parse(body)
-
-    // Update the user.
-    await db.user.update({
-      where: {
-        id: session.user.id,
-      },
-      data: {
-        name: payload.name,
-        bio: payload.bio,
-      },
-    })
+    console.log("payload", payload)
+    console.log("session.user.id", session.user.id)
+    const em = await getEM()
+    console.log("em", em)
+    const user = await em.findOneOrFail(User, session.user.id)
+    console.log("user", user)
+    user.name = payload.name
+    user.bio = payload.bio
+    await em.flush()
 
     return new Response(null, { status: 200 })
   } catch (error) {
@@ -49,3 +50,5 @@ export async function PATCH(
     return new Response(null, { status: 500 })
   }
 }
+
+export const PATCH = withORM(patchRoute)

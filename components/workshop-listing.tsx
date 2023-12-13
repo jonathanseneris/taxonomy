@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Workshop } from "@prisma/client"
+import { Workshop } from "@/entities"
 
 import { formatDate } from "@/lib/utils"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -15,7 +15,9 @@ interface PostItemProps {
 
 export function WorkshopListing({ workshop, user }: PostItemProps) {
   console.log("workshop", workshop)
-  const isParticipant = workshop?.participants?.some((p) => p.id === user.id)
+  const isParticipant = workshop?.participants
+    ?.getItems()
+    .some((p) => p.id === user.id)
   return (
     <div
       className={`flex items-center justify-between p-4 ${

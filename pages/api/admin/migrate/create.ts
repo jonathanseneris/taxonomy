@@ -46,8 +46,8 @@ async function create(req: NextApiRequest, res: NextApiResponse) {
     console.log("migrator initialized")
     await migrator.createMigration()
     console.log("migration created")
-    await migrator.up();
-    console.log('migration complete');
+    // await migrator.up();
+    // console.log('migration complete');
 
     res.status(200).end()
   } catch (err) {

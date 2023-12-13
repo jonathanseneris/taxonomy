@@ -1,12 +1,11 @@
 import * as React from "react"
 import Link from "next/link"
 import { notFound, redirect } from "next/navigation"
-import getEM from "@/orm/getEM"
 import withORM from "@/orm/withORM"
+import { getApplication, getApplications, getWorkshop } from "@/queries"
 import { format, isAfter } from "date-fns"
 
 import { authOptions } from "@/lib/auth"
-import { db } from "@/lib/db"
 import { getCurrentUser } from "@/lib/session"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
@@ -14,38 +13,6 @@ import { buttonVariants } from "@/components/ui/button"
 import { DashboardHeader } from "@/components/header"
 import { Icons } from "@/components/icons"
 import { DashboardShell } from "@/components/shell"
-
-async function getWorkshop(workshopId: Workshop["id"], userId: User["id"]) {
-  const em = await getEM()
-  return await em.findOne(
-    "Workshop",
-    workshopId,
-    { id: workshopId },
-    { include: ["createdBy"] }
-  )
-}
-
-async function getApplication(workshopId: Workshop["id"], userId: User["id"]) {
-  return await db.application.findFirst({
-    where: {
-      workshopId,
-      userId,
-    },
-  })
-}
-
-async function getApplications(workshopId: Workshop["id"]) {
-  return await db.application.findMany({
-    where: {
-      workshopId,
-      status: { not: "Draft" },
-    },
-    select: {
-      id: true,
-      status: true,
-    },
-  })
-}
 
 interface WorkshopPageProps {
   params: { id: string }
@@ -67,7 +34,7 @@ async function WorkshopPage({ params }: WorkshopPageProps) {
 
   const application = isMyWorkshop
     ? null
-    : await getApplication(params.id, user.id)
+    : await getApplication(params.id, user?.id)
 
   const applications = await getApplications(params.id)
   console.log("appss", applications)

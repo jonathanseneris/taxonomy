@@ -9,6 +9,7 @@ import { DocsPageHeader } from "@/components/page-header"
 import { DashboardTableOfContents } from "@/components/toc"
 
 import "@/styles/mdx.css"
+
 import { Metadata } from "next"
 
 import { env } from "@/env.mjs"

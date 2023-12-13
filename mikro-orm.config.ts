@@ -1,13 +1,9 @@
 import path from "path"
 import { fileURLToPath } from "url"
-import { Options } from "@mikro-orm/core"
-import { TsMorphMetadataProvider } from "@mikro-orm/reflection"
-
-import { env } from "@/env.mjs"
-
 import {
   Account,
   Application,
+  EmailSent,
   Meeting,
   Session,
   Submission,
@@ -17,32 +13,39 @@ import {
   User,
   VerificationToken,
   Workshop,
-} from "./entities"
+} from "@/entities"
+import { Options } from "@mikro-orm/core"
+import { defineConfig } from "@mikro-orm/postgresql"
+import { TsMorphMetadataProvider } from "@mikro-orm/reflection"
+
+import { env } from "@/env.mjs"
+
+const entities = [
+  Account,
+  Application,
+  EmailSent,
+  Meeting,
+  Session,
+  Submission,
+  SubmissionReview,
+  SubmissionSlot,
+  Tag,
+  User,
+  VerificationToken,
+  Workshop,
+]
 
 const __filename = fileURLToPath(import.meta.url)
 
 const __dirname = path.dirname(__filename)
 
-const config: Options = {
+const config: Options = defineConfig({
   // clientUrl: "postgresql://jonathanseneris@localhost:5432/madgemikroorm",
   clientUrl: env.DATABASE_URL,
-  type: "postgresql",
   metadataProvider: TsMorphMetadataProvider,
   baseDir: process.cwd(),
   discovery: { disableDynamicFileAccess: true },
-  entities: [
-    Account,
-    Application,
-    Meeting,
-    Workshop,
-    Session,
-    SubmissionReview,
-    SubmissionSlot,
-    Submission,
-    Tag,
-    User,
-    VerificationToken,
-  ],
+  entities,
   entitiesTs: [
     `${__dirname}/entities/Account.ts`,
     `${__dirname}/entities/Applications.ts`,
@@ -59,6 +62,6 @@ const config: Options = {
     `${__dirname}/entities/VerificationToken.ts`,
   ],
   debug: true,
-}
+})
 
 export default config

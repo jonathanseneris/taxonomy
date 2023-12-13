@@ -1,17 +1,11 @@
 import { redirect } from "next/navigation"
+import withORM from "@/orm/withORM"
 
 import { authOptions } from "@/lib/auth"
 import { getCurrentUser } from "@/lib/session"
 import { stripe } from "@/lib/stripe"
 import { getUserSubscriptionPlan } from "@/lib/subscription"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
 import { BillingForm } from "@/components/billing-form"
 import { DashboardHeader } from "@/components/header"
 import { Icons } from "@/components/icons"
@@ -22,13 +16,13 @@ export const metadata = {
   description: "Manage billing and your subscription plan.",
 }
 
-export default async function BillingPage() {
+async function BillingPage() {
   const user = await getCurrentUser()
 
   if (!user) {
     redirect(authOptions?.pages?.signIn || "/login")
   }
-
+  console.log("user", user)
   const subscriptionPlan = await getUserSubscriptionPlan(user.id)
 
   // If user has a pro plan, check cancel status on Stripe.
@@ -74,3 +68,5 @@ export default async function BillingPage() {
     </DashboardShell>
   )
 }
+
+export default withORM(BillingPage)

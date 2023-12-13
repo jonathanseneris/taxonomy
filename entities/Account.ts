@@ -1,12 +1,10 @@
-import { ManyToOne, OptionalProps, PrimaryKey, Property } from "@mikro-orm/core"
-import { v4 } from "uuid"
+import { User } from "@/entities"
+import { BaseEntity } from "@/modules/common/base.entity"
+import { Entity, ManyToOne, Property, Rel } from "@mikro-orm/core"
 
-import { User } from "./User"
-
-export class Account {
-  @PrimaryKey() id: string = v4()
-
-  @ManyToOne(() => User) user!: User
+@Entity()
+export class Account extends BaseEntity {
+  @ManyToOne(() => User) user!: Rel<User>
 
   @Property() type!: string
 
@@ -27,8 +25,4 @@ export class Account {
   @Property({ nullable: true }) idToken?: string
 
   @Property({ nullable: true }) sessionState?: string
-
-  @Property({ defaultRaw: `CURRENT_TIMESTAMP` }) createdAt!: Date
-
-  @Property({ defaultRaw: `CURRENT_TIMESTAMP` }) updatedAt!: Date
 }

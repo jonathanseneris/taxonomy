@@ -1,83 +1,18 @@
 import * as React from "react"
 import Link from "next/link"
 import { notFound, redirect } from "next/navigation"
-import { User, Workshop } from "@prisma/client"
-import { format, formatDistance } from "date-fns"
+import { getApplication, getOpenApplications, getWorkshop } from "@/queries"
 
 import { authOptions } from "@/lib/auth"
-import { db } from "@/lib/db"
 import { getCurrentUser } from "@/lib/session"
-import { cn } from "@/lib/utils"
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
-import { Button, buttonVariants } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ApplicationAcceptButton } from "@/components/application-accept-button"
-import { ApplicationDeclineButton } from "@/components/application-decline-button"
-import { ApplicationSubmitButton } from "@/components/application-submit-button"
 import { ApplicationsTabs } from "@/components/application-tabs"
 import { DashboardHeader } from "@/components/header"
-import { Icons } from "@/components/icons"
 import { DashboardShell } from "@/components/shell"
 import { WorkshopApplicationForm } from "@/components/workshop-application-form"
 
 export const metadata = {
   title: "Workshop Application",
   description: "Apply to a workshop.",
-}
-
-async function getWorkshop(workshopId: Workshop["id"], userId: User["id"]) {
-  console.log("workshopId", workshopId)
-  return await db.workshop.findFirst({
-    where: {
-      id: workshopId, // authorId: userId,
-    },
-    include: {
-      createdBy: true,
-    },
-  })
-}
-
-async function getApplication(workshopId: Workshop["id"], userId: User["id"]) {
-  return await db.application.findFirst({
-    where: {
-      workshopId,
-      userId,
-    },
-  })
-}
-
-async function getOpenApplications(workshopId: Workshop["id"]) {
-  return await db.application.findMany({
-    where: {
-      workshopId,
-      status: "Submitted",
-    },
-    include: {
-      user: {
-        select: {
-          name: true,
-          firstName: true,
-          lastName: true,
-          bio: true,
-          email: true,
-          id: true,
-        },
-      },
-    },
-  })
 }
 
 export default async function WorkshopApplicationPage({ params }) {

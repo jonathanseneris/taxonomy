@@ -1,20 +1,16 @@
 "use client"
 
 import * as React from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { Application, User } from "@prisma/client"
+import { Application } from "@/entities"
 import { formatDistance } from "date-fns"
-import { Stripe } from "stripe"
 
-import { cn } from "@/lib/utils"
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { ButtonProps, buttonVariants } from "@/components/ui/button"
+import { ButtonProps } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -24,10 +20,8 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { toast } from "@/components/ui/use-toast"
 import { ApplicationAcceptButton } from "@/components/application-accept-button"
 import { ApplicationDeclineButton } from "@/components/application-decline-button"
-import { Icons } from "@/components/icons"
 
 interface ApplicationsTabsProps extends ButtonProps {
   openApplications: Application[]

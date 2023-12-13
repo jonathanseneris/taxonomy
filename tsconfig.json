@@ -20,6 +20,7 @@
     "paths": {
       "@/*": ["./*"],
       "@entities": ["./entities/*"],
+      "@queries": ["./queries/*"],
       "contentlayer/generated": ["./.contentlayer/generated"]
     },
     "plugins": [

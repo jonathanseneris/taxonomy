@@ -1,22 +1,17 @@
-import { Account } from "@/entities/Account"
-import { Session } from "@/entities/Session"
+import { Account, Session, Submission, Workshop } from "@/entities"
+import { BaseEntity } from "@/modules/common/base.entity"
 import { defaultEntities } from "@auth/mikro-orm-adapter"
 import {
-  Cascade,
   Collection,
   Entity,
-  Enum,
+  ManyToMany,
   OneToMany,
-  PrimaryKey,
   Property,
   Unique,
 } from "@mikro-orm/core"
-import { v4 } from "uuid"
 
 @Entity()
-export class User implements defaultEntities.User {
-  @PrimaryKey() id: string = v4()
-
+export class User extends BaseEntity implements defaultEntities.User {
   @Property({ nullable: true }) image?: string
 
   @Unique()
@@ -53,29 +48,17 @@ export class User implements defaultEntities.User {
 
   @Property() location: string = ""
 
-  @Property({ defaultRaw: `CURRENT_TIMESTAMP` }) createdAt!: Date
-
-  @Property({ defaultRaw: `CURRENT_TIMESTAMP` }) updatedAt!: Date
-
-  @Property({ defaultRaw: `CURRENT_TIMESTAMP` }) lastModifiedAt!: Date
-
   @Property() isLockedOut: boolean = false
 
-  @OneToMany({
-    entity: () => Session,
-    mappedBy: (session) => session.user,
-    hidden: true,
-    orphanRemoval: true,
-    cascade: [Cascade.ALL],
-  })
-  sessions = new Collection<Session>(this)
+  @ManyToMany(() => Workshop, (workshop) => workshop.participants) workshops =
+    new Collection<Workshop>(this)
 
-  @OneToMany({
-    entity: () => Account,
-    mappedBy: (account) => account.user,
-    hidden: true,
-    orphanRemoval: true,
-    cascade: [Cascade.ALL],
-  })
-  accounts = new Collection<Account>(this)
+  @OneToMany(() => Session, (session) => session.user) sessions! =
+    new Collection<Session>(this)
+
+  @OneToMany(() => Account, (account) => account.user) accounts =
+    new Collection<Account>(this)
+
+  @OneToMany(() => Submission, (submission) => submission.user) submissions =
+    new Collection<Submission>(this)
 }

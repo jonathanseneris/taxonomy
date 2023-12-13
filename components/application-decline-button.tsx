@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Application, User } from "@prisma/client"
+import { Application, User } from "@/entities"
 import { Stripe } from "stripe"
 
 import { cn } from "@/lib/utils"

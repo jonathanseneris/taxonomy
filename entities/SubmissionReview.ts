@@ -1,21 +1,18 @@
-import { Entity, ManyToOne, PrimaryKey, Property } from "@mikro-orm/core"
-import { v4 } from "uuid"
-
-import { Submission } from "./Submission"
-import { User } from "./User"
-import { Workshop } from "./Workshop"
+import { Submission, User, Workshop } from "@/entities"
+import { BaseEntity } from "@/modules/common/base.entity"
+import { Entity, ManyToOne, Property, Rel } from "@mikro-orm/core"
 
 @Entity()
-export class SubmissionReview {
-  @PrimaryKey() id: string = v4()
+export class SubmissionReview extends BaseEntity {
+  @Property()
+  date!: Date
 
-  @Property() date!: Date
+  @ManyToOne(() => Submission)
+  submission!: Rel<Submission>
 
-  @Property() lastUpdate!: Date
+  @ManyToOne(() => User)
+  user!: Rel<User>
 
-  @ManyToOne(() => Submission) submission!: Submission
-
-  @ManyToOne(() => User) user!: User
-
-  @ManyToOne(() => Workshop) workshop!: Workshop
+  @ManyToOne(() => Workshop)
+  workshop!: Rel<Workshop>
 }

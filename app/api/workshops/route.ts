@@ -1,40 +1,14 @@
-import { WorkshopModel } from "@/prisma/zod/workshop"
+import { Workshop } from "@/entities"
+import getEM from "@/orm/getEM"
+import withORM from "@/orm/withORM"
 import { isValid } from "date-fns"
 import { getServerSession } from "next-auth/next"
 import * as z from "zod"
 
 import { authOptions } from "@/lib/auth"
-import { db } from "@/lib/db"
 import { RequiresProPlanError } from "@/lib/exceptions"
 
-export async function GET() {
-  console.log(10, "go")
-  const session = await getServerSession(authOptions)
-
-  if (!session) {
-    return new Response(null, { status: 403 })
-  }
-
-  // const { user } = session
-
-  try {
-    const workshops = await db.workshop.findMany({
-      select: {
-        id: true,
-        name: true,
-        createdAt: true,
-      }, // where: {
-      //   createdBy: user.id,
-      // },
-    })
-
-    return new Response(JSON.stringify(workshops), { status: 200 })
-  } catch (error) {
-    return new Response(null, { status: 500 })
-  }
-}
-
-export async function POST(req: Request) {
+const postRoute = async (req: Request) => {
   console.log(36, "go")
   const session = await getServerSession(authOptions)
   console.log("req.method", req.method)
@@ -43,28 +17,15 @@ export async function POST(req: Request) {
   }
 
   try {
-    // const subscriptionPlan = await getUserSubscriptionPlan(user.id);
-    //
-    // // If user is on a free plan.
-    // // Check if user has reached limit of 3 workshops.
-    // if (!subscriptionPlan?.isPro) {
-    //   const count = await db.workshop.count({
-    //     where: {
-    //       authorId: user.id,
-    //     },
-    //   });
-    //
-    //   if (count >= 3) {
-    //     throw new RequiresProPlanError();
-    //   }
-    // }
+    const em = await getEM()
 
     const body = await req.json()
 
     console.log("body", body)
+
     const data = {
       ...body,
-      userId: session.user.id,
+      createdBy: session.user.id,
       createdAt: new Date(),
       open: true,
       archived: false,
@@ -76,12 +37,8 @@ export async function POST(req: Request) {
     console.log("isValid??", isValid(data.startDate))
     console.log("isValid??", isValid(data.createdAt))
 
-    const workshop = await db.workshop.create({
-      data,
-      select: {
-        id: true,
-      },
-    })
+    const workshop = await em.create(Workshop, data)
+    await em.persistAndFlush(workshop)
 
     return new Response(JSON.stringify(workshop), { status: 200 })
   } catch (error) {
@@ -97,3 +54,5 @@ export async function POST(req: Request) {
     return new Response(null, { status: 500 })
   }
 }
+
+export const POST = withORM(postRoute)

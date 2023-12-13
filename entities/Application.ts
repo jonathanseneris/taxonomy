@@ -1,20 +1,9 @@
-import {
-  Entity,
-  ManyToOne,
-  OptionalProps,
-  PrimaryKey,
-  Property,
-} from "@mikro-orm/core"
-
-import { User } from "./User"
-import { Workshop } from "./Workshop"
+import { User, Workshop } from "@/entities"
+import { BaseEntity } from "@/modules/common/base.entity"
+import { Entity, ManyToOne, Property, Rel } from "@mikro-orm/core"
 
 @Entity()
-export class Application {
-  [OptionalProps]?: "about" | "sample" | "statement" | "status"
-
-  @PrimaryKey({ columnType: "text" }) id!: string
-
+export class Application extends BaseEntity {
   @Property({ nullable: true }) submittedOn?: Date
 
   @Property({ nullable: true }) viewedOn?: Date
@@ -29,7 +18,7 @@ export class Application {
 
   @Property({ columnType: "text" }) sample: string = ""
 
-  @ManyToOne(() => User) user!: User
+  @ManyToOne(() => User) user!: Rel<User>
 
-  @ManyToOne(() => Workshop) workshop!: Workshop
+  @ManyToOne(() => Workshop) workshop!: Rel<Workshop>
 }

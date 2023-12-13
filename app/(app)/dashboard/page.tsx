@@ -1,12 +1,10 @@
 import * as React from "react"
-import { cache } from "react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import { User } from "@/entities"
-import getEM from "@/orm/getEM"
+import withORM from "@/orm/withORM"
+import { getWorkshopsForUser } from "@/queries"
 
 import { authOptions } from "@/lib/auth"
-import { db } from "@/lib/db"
 import { getCurrentUser } from "@/lib/session"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
@@ -23,17 +21,7 @@ export const metadata = {
 
 export const dynamic = "force-dynamic"
 
-const getWorkshopsForUser = cache(async (userId: User["id"]) => {
-  const em = await getEM()
-  const user = await em.findOne(User, userId, {
-    include: ["workshops"],
-  })
-
-  console.log("user", user)
-  return { participating: user?.workshops || [], leading: user?.Workshop || [] }
-})
-
-export default async function DashboardPage() {
+async function DashboardPage() {
   console.log("go--")
   const user = await getCurrentUser()
   console.log("user", user)
@@ -89,3 +77,5 @@ export default async function DashboardPage() {
     </DashboardShell>
   )
 }
+
+export default withORM(DashboardPage)

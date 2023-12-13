@@ -1,14 +1,7 @@
-import { NextApiRequest } from "next"
-import withORM from "@/orm/withORM"
-import { EntityManager, RequestContext } from "@mikro-orm/core"
-import type { PostgreSqlDriver } from "@mikro-orm/postgresql"
-
-// or any other driver package
-
-import getLogger from "./getLogger"
+import { EntityManager, MikroORM, RequestContext } from "@mikro-orm/core"
 
 const getEM = async (): Promise<EntityManager> => {
-  const em = RequestContext.getEntityManager()
+  const em = await RequestContext.getEntityManager()
   if (!em) {
     throw new Error(
       "Entity manager not found. Are you in a 'withORM'-wrapped Context?"
@@ -17,4 +10,5 @@ const getEM = async (): Promise<EntityManager> => {
   return em
 }
 
-export default withORM(getEM)
+// export default withORM(getEM)
+export default getEM

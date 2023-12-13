@@ -1,7 +1,6 @@
-import { cache } from "react"
 import { redirect } from "next/navigation"
-import { Workshop } from "@/entities"
-import getEM from "@/orm/getEM"
+import withORM from "@/orm/withORM"
+import { getWorkshopsForUser } from "@/queries"
 
 import { authOptions } from "@/lib/auth"
 import { getCurrentUser } from "@/lib/session"
@@ -17,41 +16,14 @@ export const metadata = {
   title: "Dashboard",
 }
 
-const getWorkshops = cache(async (userId) => {
-  console.log(21)
-  const em = await getEM()
-  return await em.find(
-    Workshop,
-    {
-      open: true,
-    },
-    {
-      attributes: [
-        "id",
-        "userId",
-        "name",
-        "createdBy",
-        "createdAt",
-        "startDate",
-        "participants",
-      ],
-
-      orderBy: {
-        startDate: "desc",
-      },
-    }
-  )
-})
-
-export default async function DirectoryPage() {
+async function WorkPage() {
   const user = await getCurrentUser()
 
   if (!user) {
     redirect(authOptions?.pages?.signIn || "/login")
   }
 
-  const workshops = await getWorkshops(user.id)
-  console.log("workshops", workshops)
+  const workshops = await getWorkshopsForUser(user.id)
   return (
     <DashboardShell>
       <DashboardHeader heading="Directory" text="Find a workshop.">
@@ -87,3 +59,5 @@ export default async function DirectoryPage() {
     </DashboardShell>
   )
 }
+
+export default withORM(WorkPage)
