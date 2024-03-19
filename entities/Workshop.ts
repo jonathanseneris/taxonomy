@@ -51,6 +51,6 @@ export class Workshop extends BaseEntity {
   @OneToMany(() => Submission, (submission) => submission.workshop)
   submissions = new Collection<Submission>(this)
 
-  @ManyToMany(() => User, "workshops", { owner: true })
+  @ManyToMany(() => User, (user) => user.workshops, { owner: true })
   participants = new Collection<User>(this)
 }

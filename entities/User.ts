@@ -50,15 +50,15 @@ export class User extends BaseEntity implements defaultEntities.User {
 
   @Property() isLockedOut: boolean = false
 
-  @ManyToMany(() => Workshop, (workshop) => workshop.participants) workshops =
-    new Collection<Workshop>(this)
+  @OneToMany(() => Session, (session) => session.user)
+  sessions! = new Collection<Session>(this)
 
-  @OneToMany(() => Session, (session) => session.user) sessions! =
-    new Collection<Session>(this)
+  @OneToMany(() => Account, (account) => account.user)
+  accounts = new Collection<Account>(this)
 
-  @OneToMany(() => Account, (account) => account.user) accounts =
-    new Collection<Account>(this)
+  @OneToMany(() => Submission, (submission) => submission.user)
+  submissions = new Collection<Submission>(this)
 
-  @OneToMany(() => Submission, (submission) => submission.user) submissions =
-    new Collection<Submission>(this)
+  @ManyToMany(() => Workshop, (workshop) => workshop.participants)
+  workshops = new Collection<Workshop>(this)
 }
