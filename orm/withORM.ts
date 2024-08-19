@@ -4,7 +4,6 @@ import { MikroORM, RequestContext } from "@mikro-orm/core"
 
 const getORM = async () => {
   if (!global.__MikroORM__) {
-    console.log("withOrm", 7)
     global.__MikroORM__ = await MikroORM.init(config)
   }
   return global.__MikroORM__

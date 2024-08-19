@@ -15,7 +15,7 @@ const routeContextSchema = z.object({
 
 const patchRoute = async (
   req: Request,
-  context: z.infer<typeof routeContextSchema>
+  context: z.infer<typeof routeContextSchema>,
 ) => {
   try {
     // Validate the route context.
@@ -32,22 +32,42 @@ const patchRoute = async (
     console.log("body", body)
     const payload = userNameSchema.parse(body)
     console.log("payload", payload)
-    console.log("session.user.id", session.user.id)
     const em = await getEM()
-    console.log("em", em)
-    const user = await em.findOneOrFail(User, session.user.id)
+    const user = await em.findOneOrFail(
+      User,
+      { id: params.userId },
+      {
+        fields: [
+          "id",
+          "name",
+          "bio",
+          "location",
+          "workingOn",
+          "lookingFor",
+          "isAvailable",
+          "updatedAt",
+        ],
+      },
+    )
     console.log("user", user)
     user.name = payload.name
     user.bio = payload.bio
+    user.location = payload.location
+    user.workingOn = payload.workingOn
+    user.lookingFor = payload.lookingFor
+    user.isAvailable = payload.isAvailable
+    user.updatedAt = new Date()
+
     await em.flush()
 
     return new Response(null, { status: 200 })
   } catch (error) {
+    console.error(error)
     if (error instanceof z.ZodError) {
       return new Response(JSON.stringify(error.issues), { status: 422 })
     }
 
-    return new Response(null, { status: 500 })
+    return new Response(error, { status: 500 })
   }
 }
 

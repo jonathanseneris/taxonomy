@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import { MikroORM } from "@mikro-orm/core"
-import { TSMigrationGenerator } from "@mikro-orm/migrations"
 import { defineConfig } from "@mikro-orm/postgresql"
 
 import { env } from "@/env.mjs"
@@ -14,15 +13,14 @@ async function create(req: NextApiRequest, res: NextApiResponse) {
     console.log("db:", env.DATABASE_URL)
     const orm = await MikroORM.init(
       defineConfig({
-        clientUrl: env.DATABASE_URL,
-        // metadataProvider: TsMorphMetadataProvider,
+        clientUrl: env.DATABASE_URL, // metadataProvider: TsMorphMetadataProvider,
         entities: Object.values(entities),
         entitiesTs: [`${__dirname}/../entities/**/*.ts`],
         debug: true,
         migrations: {
           tableName: "mikro_orm_migrations", // name of database table with log of executed transactions
           path: "./migrations", // path to the folder with migrations
-          // pathTs: './migrations', // path to the folder with TS migrations (if used, we should put path to compiled files in `path`)
+          pathTs: "./migrations", // path to the folder with TS migrations (if used, we should put path to compiled files in `path`)
           glob: "!(*.d).{js,ts}", // how to match migration files (all .js and .ts files, but not .d.ts)
           transactional: false, // wrap each migration in a transaction
           disableForeignKeys: false, // wrap statements with `set foreign_key_checks = 0` or equivalent
@@ -30,7 +28,7 @@ async function create(req: NextApiRequest, res: NextApiResponse) {
           dropTables: true, // allow to disable table dropping
           safe: false, // allow to disable table and column dropping
           snapshot: true, // save Snapshot when creating new migrations
-          emit: "ts", // migration generation mode
+          emit: "js", // migration generation mode
           // generator: TSMigrationGenerator, // migration generator, e.g. to allow custom formatting
         },
         seeder: {
@@ -41,7 +39,7 @@ async function create(req: NextApiRequest, res: NextApiResponse) {
           emit: "ts", // seeder generation mode
           fileName: (className: string) => className, // seeder file naming convention
         },
-      })
+      }),
     )
     console.log("connected")
     const migrator = orm.getMigrator()

@@ -2,7 +2,7 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 import { Skeleton } from "@/components/ui/skeleton"
-import { WorkshopListing } from "@/components/workshop-listing"
+import { UserListing } from "@/components/user-listing"
 
 const Card = React.forwardRef<
   HTMLDivElement,

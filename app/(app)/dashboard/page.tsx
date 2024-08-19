@@ -1,8 +1,9 @@
 import * as React from "react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+import { User } from "@/entities"
 import withORM from "@/orm/withORM"
-import { getWorkshopsForUser } from "@/queries"
+import { getNotificationsForUser, getWorkshopsForUser } from "@/queries"
 
 import { authOptions } from "@/lib/auth"
 import { getCurrentUser } from "@/lib/session"
@@ -12,8 +13,8 @@ import { EmptyPlaceholder } from "@/components/empty-placeholder"
 import { DashboardHeader } from "@/components/header"
 import { Icons } from "@/components/icons"
 import { DashboardShell } from "@/components/shell"
-import { WorkshopCreateButton } from "@/components/workshop-create-button"
-import { WorkshopListing } from "@/components/workshop-listing"
+import { UserListing } from "@/components/user-listing"
+import { WorkCreateButton } from "@/components/work-create-button"
 
 export const metadata = {
   title: "Dashboard",
@@ -23,31 +24,30 @@ export const dynamic = "force-dynamic"
 
 async function DashboardPage() {
   console.log("go--")
-  const user = await getCurrentUser()
+  const user: User = await getCurrentUser()
   console.log("user", user)
   if (!user) {
     redirect(authOptions?.pages?.signIn || "/login")
   }
   console.log("user", user)
-  const { participating, leading } = await getWorkshopsForUser(user?.id)
-  console.log("workshops", participating, leading)
-  const hasWorkshops = participating?.length || leading?.length
+  const notifications = await getNotificationsForUser(user.id)
+
   return (
     <DashboardShell>
       <DashboardHeader heading="Dashboard" text="Your workshops at a glance.">
-        <WorkshopCreateButton />
+        <WorkCreateButton />
       </DashboardHeader>
       <div>
-        {hasWorkshops ? (
+        {notifications.length ? (
           <div>
             <div className="divide-y divide-neutral-200 rounded-md border border-slate-200">
               {leading.map((workshop) => (
-                <WorkshopListing key={workshop.id} workshop={workshop} />
+                <UserListing key={workshop.id} workshop={workshop} />
               ))}
             </div>
             <div className="divide-y divide-neutral-200 rounded-md border border-slate-200">
               {participating.map((workshop) => (
-                <WorkshopListing key={workshop.id} workshop={workshop} />
+                <UserListing key={workshop.id} workshop={workshop} />
               ))}
             </div>
           </div>
@@ -62,13 +62,13 @@ async function DashboardPage() {
               href="/directory"
               className={cn(
                 buttonVariants({ variant: "outline" }),
-                "text-slate-900 m-2"
+                "text-slate-900 m-2",
               )}
             >
               <Icons.search className="mr-2 h-4 w-4" />
-              Find a workshop
+              Find workshoppers
             </Link>
-            <WorkshopCreateButton
+            <WorkCreateButton
               className={cn(buttonVariants({ variant: "default" }))}
             />
           </EmptyPlaceholder>

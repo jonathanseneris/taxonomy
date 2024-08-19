@@ -27,7 +27,7 @@ export default async function IndexPage() {
         </div>
         <div className="container flex max-w-[64rem] flex-col items-center gap-4 text-center">
           <h1 className="font-heading text-3xl text-red-400 sm:text-5xl md:text-6xl lg:text-7xl">
-            Meet Your Audience
+            Find Your Audience
           </h1>
           <Link href="/login" className={cn(buttonVariants({ size: "lg" }))}>
             Get Started

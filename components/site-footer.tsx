@@ -39,7 +39,7 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
             >
               thoughtful
             </a>
-            . Meet your{" "}
+            . Find your{" "}
             <a
               href={siteConfig.links.github}
               target="_blank"

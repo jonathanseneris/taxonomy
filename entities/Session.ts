@@ -4,13 +4,9 @@ import { Entity, ManyToOne, Property, Rel, Unique } from "@mikro-orm/core"
 
 @Entity()
 export class Session extends BaseEntity {
-  @Unique()
-  @Property()
-  sessionToken!: string
+  @Unique() @Property() sessionToken!: string
 
-  @ManyToOne(() => User)
-  user!: Rel<User>
+  @ManyToOne(() => User) user!: Rel<User>
 
-  @Property()
-  expires!: Date
+  @Property() expires!: Date
 }

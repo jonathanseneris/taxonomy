@@ -1,39 +1,15 @@
 import path from "path"
 import { fileURLToPath } from "url"
-import {
-  Account,
-  Application,
-  EmailSent,
-  Meeting,
-  Session,
-  Submission,
-  SubmissionReview,
-  SubmissionSlot,
-  Tag,
-  User,
-  VerificationToken,
-  Workshop,
-} from "@/entities"
+import * as entityFiles from "@/entities"
 import { Options } from "@mikro-orm/core"
 import { defineConfig } from "@mikro-orm/postgresql"
 import { TsMorphMetadataProvider } from "@mikro-orm/reflection"
 
 import { env } from "@/env.mjs"
 
-const entities = [
-  Account,
-  Application,
-  EmailSent,
-  Meeting,
-  Session,
-  Submission,
-  SubmissionReview,
-  SubmissionSlot,
-  Tag,
-  User,
-  VerificationToken,
-  Workshop,
-]
+const entities = Object.keys(entityFiles)
+  // @ts-ignore
+  .map((key) => entityFiles[key])
 
 const __filename = fileURLToPath(import.meta.url)
 
@@ -45,23 +21,8 @@ const config: Options = defineConfig({
   metadataProvider: TsMorphMetadataProvider,
   baseDir: process.cwd(),
   discovery: { disableDynamicFileAccess: true },
-  entities,
-  entitiesTs: [
-    `${__dirname}/entities/Account.ts`,
-    `${__dirname}/entities/Applications.ts`,
-    `${__dirname}/entities/EmailsSent.ts`,
-    `${__dirname}/entities/Meetings.ts`,
-    `${__dirname}/entities/Workshops.ts`,
-    `${__dirname}/entities/Session.ts`,
-    `${__dirname}/entities/SubmissionReviews.ts`,
-    `${__dirname}/entities/SubmissionSlots.ts`,
-    `${__dirname}/entities/Submissions.ts`,
-    `${__dirname}/entities/Tags.ts`,
-    `${__dirname}/entities/Users.ts`,
-    `${__dirname}/entities/UsersLogins.ts`,
-    `${__dirname}/entities/VerificationToken.ts`,
-  ],
-  debug: true,
+  entities: Object.values(entities),
+  // debug: true,
   migrations: {
     tableName: "mikro_orm_migrations", // name of database table with log of executed transactions
     path: "./migrations", // path to the folder with migrations

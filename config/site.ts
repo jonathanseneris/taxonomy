@@ -2,7 +2,7 @@ import { SiteConfig } from "types"
 
 export const siteConfig: SiteConfig = {
   name: "Madge",
-  description: "Meet your audience",
+  description: "Find your audience",
   url: "https://madge.io",
   ogImage: "https://sener.is/hank.gif",
   links: {
